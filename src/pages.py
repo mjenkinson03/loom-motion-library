@@ -4,6 +4,7 @@ LOOPBAR="animation:load 5s linear infinite}@keyframes load{from{width:0}to{width
 CSS={
  "std":"#a{position:absolute;inset:0 0 auto 0;height:84%;display:grid;place-items:center}#a svg{height:36%!important;width:auto!important;overflow:visible!important}",
  "wide":"#a{position:absolute;inset:0 0 auto 0;height:84%;display:grid;place-items:center}#a svg{height:66%!important;width:auto!important;overflow:visible!important}",
+ "reel":"#a{position:absolute;inset:0 0 auto 0;height:84%;display:grid;place-items:center}#a svg{height:58%!important;width:auto!important;overflow:visible!important}",
  "full":"#a{position:absolute;inset:0}#a svg{width:100%!important;height:100%!important}",
 }
 LOAD='''const FIX=new URLSearchParams(location.search).get('t');
@@ -32,7 +33,7 @@ const setBar=s=>document.querySelector('.bar i').style.width=(Math.min(1,s/BAR_F
 {LOAD.replace('@@',"a.addEventListener('enterFrame',e=>setBar(e.currentTime/60));")}
 </script></body></html>'''
 PAGES={
- "movie-reel":page("movie-reel","Movie reel","std"),
+ "movie-reel":page("movie-reel","Movie reel","reel"),
  "shutter":page("shutter","Shutter","std"),
  "tracking":page("tracking","Tracking","wide"),
  "arrival":arrival(),
