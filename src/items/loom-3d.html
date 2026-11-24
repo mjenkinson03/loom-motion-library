@@ -1,0 +1,103 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Loom 3D spin</title>
+<style>
+  html,body{margin:0;height:100%;background:#0a0a0d;overflow:hidden}
+  canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .bar{position:absolute;left:50%;top:73.5%;width:58vh;height:2vh;min-height:3px;transform:translateX(-50%);background:#1e1e20;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:#1b6ae0;animation:load 5s linear infinite}
+  @keyframes load{from{width:0}to{width:100%}}
+</style></head><body>
+<canvas id="c"></canvas>
+<div class="bar"><i></i></div>
+<script>
+// ---- tweakables ----
+const SPOKES = 12;
+const INNER  = 34;     // radius of the round hole
+const RING   = 10;     // thickness of the round ring around the hole
+const OUTER  = 100;    // outer radius of the spoke tips
+const WIDTH  = 24;     // spoke width
+const DEPTH  = 30;     // extrusion thickness
+const TILT   = 12;     // deg, positive = looking up at it, negative = looking down on it, 0 = dead-on
+const SECONDS_PER_TURN = 2.6;
+const EASE   = 0.85;   // 0 = constant speed, ~1 = nearly stops then whips round (loading feel)
+const SIZE   = 0.85;   // overall size multiplier
+const FACETS = 160;    // facets in the round ring (smooth shading makes it a true circle)
+const LIGHT  = [-0.3,-0.35,0.85];
+// --------------------
+const cv=document.getElementById('c');
+const gl=cv.getContext('webgl',{antialias:true});
+const DPR=2, W=innerWidth, H=innerHeight;
+cv.width=W*DPR; cv.height=H*DPR;
+const sh=(t,s)=>{const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);return o};
+const pr=gl.createProgram();
+gl.attachShader(pr,sh(gl.VERTEX_SHADER,`
+attribute vec3 a_pos; attribute vec3 a_nrm;
+uniform mat3 u_rot; uniform float u_s; uniform vec2 u_half; uniform float u_off;
+varying vec3 v_n;
+void main(){
+  vec3 p=u_rot*a_pos*u_s;           // CSS-style coords: +x right, +y down, +z toward viewer
+  float D=900.0, n=100.0, f=4000.0;
+  float w=D-p.z, ez=p.z-D;
+  float A=-(f+n)/(f-n), B=-2.0*f*n/(f-n);
+  gl_Position=vec4(D*p.x/u_half.x, -D*p.y/u_half.y+u_off*w, A*ez+B, w);
+  v_n=u_rot*a_nrm;
+}`));
+gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,`
+precision mediump float; varying vec3 v_n; uniform vec3 u_light;
+void main(){ float k=0.55+0.5*max(0.0,dot(normalize(v_n),u_light)); gl_FragColor=vec4(vec3(min(1.0,k)),1.0); }`));
+gl.linkProgram(pr); gl.useProgram(pr);
+// ---- geometry: 12 box spokes + a round ring, depth-buffered so there are no seams ----
+const P=[],N=[];
+const tri=(a,b,c,n)=>{for(const v of [a,b,c]){P.push(...v);N.push(...n)}};
+function quad(a,b,c,d,n){tri(a,b,c,n);tri(a,c,d,n)}
+const rz=(v,a)=>[v[0]*Math.cos(a)-v[1]*Math.sin(a),v[0]*Math.sin(a)+v[1]*Math.cos(a),v[2]];
+const hd=DEPTH/2, SI=INNER+RING-4, W_=WIDTH, hw=W_/2;
+for(let i=0;i<SPOKES;i++){
+  const a=i*2*Math.PI/SPOKES;
+  const c=(x,y,z)=>rz([x,y,z],a), nn=(x,y,z)=>rz([x,y,z],a);
+  const y0=-OUTER, y1=-SI;
+  quad(c(-hw,y0,hd),c(hw,y0,hd),c(hw,y1,hd),c(-hw,y1,hd),nn(0,0,1));
+  quad(c(hw,y0,-hd),c(-hw,y0,-hd),c(-hw,y1,-hd),c(hw,y1,-hd),nn(0,0,-1));
+  quad(c(hw,y0,hd),c(hw,y0,-hd),c(hw,y1,-hd),c(hw,y1,hd),nn(1,0,0));
+  quad(c(-hw,y0,-hd),c(-hw,y0,hd),c(-hw,y1,hd),c(-hw,y1,-hd),nn(-1,0,0));
+  quad(c(-hw,y0,-hd),c(hw,y0,-hd),c(hw,y0,hd),c(-hw,y0,hd),nn(0,-1,0));
+  quad(c(-hw,y1,hd),c(hw,y1,hd),c(hw,y1,-hd),c(-hw,y1,-hd),nn(0,1,0));
+}
+const Ri=INNER, Ro=INNER+RING, hr=hd-0.6;      // ring recessed a hair so spoke faces sit cleanly on top
+function pt(r,k,z){const t=k*2*Math.PI/FACETS;return [r*Math.sin(t),-r*Math.cos(t),z]}
+function rad(k,s){const t=k*2*Math.PI/FACETS;return [s*Math.sin(t),-s*Math.cos(t),0]}
+function quadSmooth(a,b,c,d,na,nb,nc,nd){for(const [v,n] of [[a,na],[b,nb],[c,nc],[a,na],[c,nc],[d,nd]]){P.push(...v);N.push(...n)}}
+for(let k=0;k<FACETS;k++){
+  const k1=k+1;
+  quad(pt(Ri,k,hr),pt(Ro,k,hr),pt(Ro,k1,hr),pt(Ri,k1,hr),[0,0,1]);
+  quad(pt(Ro,k,-hr),pt(Ri,k,-hr),pt(Ri,k1,-hr),pt(Ro,k1,-hr),[0,0,-1]);
+  quadSmooth(pt(Ri,k,-hr),pt(Ri,k1,-hr),pt(Ri,k1,hr),pt(Ri,k,hr),rad(k,-1),rad(k1,-1),rad(k1,-1),rad(k,-1));
+  quadSmooth(pt(Ro,k,hr),pt(Ro,k1,hr),pt(Ro,k1,-hr),pt(Ro,k,-hr),rad(k,1),rad(k1,1),rad(k1,1),rad(k,1));
+}
+const buf=(data,name,size)=>{const b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);
+  const l=gl.getAttribLocation(pr,name);gl.enableVertexAttribArray(l);gl.vertexAttribPointer(l,size,gl.FLOAT,false,0,0)};
+buf(P,'a_pos',3); buf(N,'a_nrm',3);
+const COUNT=P.length/3;
+const U=n=>gl.getUniformLocation(pr,n);
+gl.uniform2f(U('u_half'),W/2,H/2);
+gl.uniform1f(U('u_s'),Math.min(W,H)/260*0.4*SIZE);
+gl.uniform1f(U('u_off'),0.16);
+const L=Math.hypot(...LIGHT); gl.uniform3f(U('u_light'),LIGHT[0]/L,LIGHT[1]/L,LIGHT[2]/L);
+gl.enable(gl.DEPTH_TEST); gl.depthFunc(gl.LESS);
+gl.viewport(0,0,cv.width,cv.height);
+gl.clearColor(10/255,10/255,13/255,1);
+function mul(a,b){const o=new Array(9).fill(0);for(let c=0;c<3;c++)for(let r=0;r<3;r++)for(let k=0;k<3;k++)o[c*3+r]+=a[k*3+r]*b[c*3+k];return o}
+const RX=a=>{const c=Math.cos(a),s=Math.sin(a);return[1,0,0, 0,c,s, 0,-s,c]};
+const RY=a=>{const c=Math.cos(a),s=Math.sin(a);return[c,0,-s, 0,1,0, s,0,c]};
+function angle(ms){const k=ms/1000/SECONDS_PER_TURN;return (k-EASE*Math.sin(2*Math.PI*k)/(2*Math.PI))*2*Math.PI}
+const FIX=new URLSearchParams(location.search).get('t');
+const tilt=TILT*Math.PI/180;
+function frame(ms){
+  if(FIX!==null) ms=+FIX*1000;
+  gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+  gl.uniformMatrix3fv(U('u_rot'),false,mul(RX(tilt),RY(angle(ms))));
+  gl.drawArrays(gl.TRIANGLES,0,COUNT);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script></body></html>

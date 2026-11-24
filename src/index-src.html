@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motion Library</title>
+<style>
+:root{--bg:#fafafa;--ink:#111;--sub:#555;--line:#e5e5e5;--chip:#efefef;--blue:#1868db;
+--mono:ui-monospace,'SF Mono','JetBrains Mono',Menlo,Consolas,monospace;
+--sans:'Inter','Inter Tight',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+--serif:'Instrument Serif',Georgia,'Times New Roman',serif}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1420px;margin:0 auto;padding:0 48px}
+.top{position:sticky;top:0;z-index:50;background:rgba(250,250,250,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);height:69px}
+.top .wrap{height:100%;display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+.brand{font-weight:600;font-size:18px;letter-spacing:-.01em;text-decoration:none}
+.top nav{display:flex;gap:28px}.top nav a{text-decoration:none;color:var(--sub);font-size:16px}.top nav a:hover{color:var(--ink)}
+.eyebrow{font:12.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--sub)}
+.herob{position:relative;overflow:hidden}#waves{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.herob .hero{position:relative}
+.hero{padding-top:120px;padding-bottom:104px}
+h1{font-weight:300;font-size:clamp(40px,5.6vw,80px);line-height:1.03;letter-spacing:-.05em;margin:34px 0 0;max-width:1180px}
+h1 em,h2 em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.02em}
+section.s{border-top:1px solid var(--line);padding:64px 0 72px;scroll-margin-top:69px}
+.sh{display:grid;grid-template-columns:minmax(0,.79fr) minmax(0,1fr);gap:48px;align-items:start;margin-bottom:28px}
+.num{font:13px var(--mono);letter-spacing:.1em;color:var(--sub);margin-bottom:6px}
+h2{font-weight:400;font-size:clamp(32px,3.4vw,48px);line-height:1.05;letter-spacing:-.045em;margin:0}
+.secsub{margin:10px 0 0;color:var(--sub);font-size:17px;line-height:1.5;max-width:760px}
+.grid{display:grid;gap:64px 40px}.grid.c2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid.c3{grid-template-columns:repeat(3,minmax(0,1fr));gap:56px 24px}
+.tag{display:inline-block;font:11.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;background:var(--chip);color:#555;padding:4px 9px;border-radius:5px;margin-bottom:12px}
+.cardhead{margin-bottom:16px}
+.cardtitle{font-weight:500;font-size:19px;margin:0 0 2px;letter-spacing:-.01em}
+.live{position:relative;aspect-ratio:1280/800;overflow:hidden;background:#0b0b0c;border-radius:16px;clip-path:inset(0 round 16px);border:1px solid var(--line);box-shadow:0 18px 50px -28px rgba(20,25,40,.35)}
+.live iframe{position:absolute;left:0;top:0;width:1280px;height:800px;border:0;transform-origin:0 0;background:#0b0b0c}
+.live .ph{position:absolute;inset:0;display:grid;place-items:center;color:#8a8a8a;font:13px var(--mono);pointer-events:none}
+.empty .live{background:transparent;border:1.5px dashed #cfcfcf;box-shadow:none}.empty .ph{color:#9a9a9a}.empty .cardtitle{color:#9a9a9a}
+@media(max-width:900px){.grid.c2,.grid.c3{grid-template-columns:1fr}.wrap{padding:0 24px}}
+</style></head>
+<body>
+<header class="top"><div class="wrap"><a class="brand" href="#top">Motion Library</a>
+<nav><a href="#cinema">Cinema</a><a href="#d3">3D</a><a href="#geo">Geometric</a></nav><span></span></div></header>
+<main id="top">
+<div class="herob"><canvas id="waves" aria-hidden="true"></canvas>
+<div class="wrap hero"><div class="eyebrow">Loom · Motion experiments</div>
+<h1>Loading <em>styles</em></h1></div></div>
+<div id="sections"></div></main>
+<script>
+/* ---- add new riffs here: put a page in items/ and add a line to a group, then run build.py ---- */
+var GROUPS=[
+ {id:'cinema',title:'Cinema',sub:'Concepts connected to things that exist in cinema and film.',cols:3,items:[
+  {tag:'Lottie',title:'Movie reel',src:'items/movie-reel.html'},
+  {tag:'Lottie',title:'Shutter',src:'items/shutter.html'},
+  {tag:'Lottie',title:'Tracking',src:'items/tracking.html'},
+  {tag:'Lottie',title:'Arrival',src:'items/arrival.html'},
+  {tag:'Canvas',title:'Film strip',src:'items/film-strip.html'},
+  {tag:'Lottie',title:'Depth of field',src:'items/dof.html'},
+  {tag:'Lottie',title:'Surfacing',src:'items/surfacing.html'}]},
+ {id:'d3',title:'3D',cols:3,items:[
+  {tag:'3D · WebGL',title:'Loom, three-quarter spin',src:'items/loom-3d.html'}]},
+ {id:'geo',title:'Geometric',cols:3,items:[
+  {tag:'Lottie',title:'Unfold',src:'items/unfold.html'},
+  {tag:'Lottie',title:'Tunnel',src:'items/tunnel.html'},
+  {tag:'Lottie',title:'Assemble',src:'items/assemble.html'}]}
+];
+var VW=1280, boxes=[], n=0, root=document.getElementById('sections');
+function fit(b){b._f.style.transform='scale('+b.clientWidth/VW+')'}
+GROUPS.forEach(function(gp,gi){
+  var sec=document.createElement('section');sec.className='s';sec.id=gp.id;
+  sec.innerHTML='<div class="wrap"><div class="sh"><div><div class="num">0'+(gi+1)+'</div><h2>'+gp.title+'</h2>'+(gp.sub?'<p class="secsub">'+gp.sub+'</p>':'')+'</div></div><div class="grid c'+gp.cols+'"></div></div>';
+  root.appendChild(sec);var grid=sec.querySelector('.grid');
+  gp.items.forEach(function(it){
+    n++;var card=document.createElement('div');
+    if(it.empty){card.className='empty';card.innerHTML='<span class="tag">Open slot</span><div class="cardhead"><div class="cardtitle">'+n+' · Next riff</div></div><div class="live"><div class="ph">Empty</div></div>';grid.appendChild(card);return}
+    card.innerHTML='<span class="tag">'+it.tag+'</span><div class="cardhead"><div class="cardtitle">'+n+' · '+it.title+'</div></div><div class="live"><iframe title="'+it.title+'"></iframe><div class="ph">Loading…</div></div>';
+    grid.appendChild(card);
+    var box=card.querySelector('.live'),f=box.querySelector('iframe'),ph=box.querySelector('.ph');
+    box._f=f;f.addEventListener('load',function(){ph.style.display='none'});
+    boxes.push(box);fit(box);
+    var io=new IntersectionObserver(function(es){if(es[0].isIntersecting&&!f.srcdoc){f.srcdoc=INLINE[it.src];io.disconnect()}},{rootMargin:'400px'});
+    io.observe(box);
+  });
+});
+addEventListener('resize',function(){boxes.forEach(fit)});
+</script>
+</body></html>
