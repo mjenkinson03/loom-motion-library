@@ -59,10 +59,24 @@ warp(base,base["fr"])
 # The number in each card is how long the blue bar takes to load. The shutter plays at the END of the loading (it lasts 1.1s: 1.3s-2.4s in the master
 # timeline) and the bounce outro follows at its normal speed. Nothing is sped up: only the loading hold before the shutter is longer or shorter.
 SHUTTER_START,SHUTTER_LEN=1.3,1.0
+def repeat_shutter(o,n,L,fps):
+    """The shutter (the first L seconds of every animated property) plays n times in a row; the rest (the outro) follows after the last one."""
+    if isinstance(o,dict):
+        for k,v in list(o.items()):
+            if k=="k" and isinstance(v,list) and v and isinstance(v[0],dict) and "t" in v[0] and "s" in v[0]:
+                pre=[x for x in v if x["t"]<L*fps-1e-6]; post=[x for x in v if x["t"]>=L*fps-1e-6]
+                out=[]
+                for c in range(n):
+                    for x in pre: y=copy.deepcopy(x); y["t"]=round(x["t"]+c*L*fps,3); out.append(y)
+                for x in post: y=copy.deepcopy(x); y["t"]=round(x["t"]+(n-1)*L*fps,3); out.append(y)
+                o[k]=out
+            elif k=="op" and isinstance(v,(int,float)): o[k]=round(v+(n-1)*L*fps,3)
+            else: repeat_shutter(v,n,L,fps)
+    elif isinstance(o,list):
+        for x in o: repeat_shutter(x,n,L,fps)
+# Loading is filled with the shutter: it keeps cycling (1.0s per cycle) until the bar is full, then the 1.0s outro runs. 6s = 6 shutters, 3s = 3, 1s = 1.
+cut=copy.deepcopy(base); cut_start(cut,SHUTTER_START,base["fr"])
 for secs in (6,3,1):
-    lot=copy.deepcopy(base)
-    start=max(0.0,secs-SHUTTER_LEN)                                   # when the shutter begins in the new timeline
-    if start>=SHUTTER_START: retime(lot,start-SHUTTER_START,SHUTTER_START,base["fr"])
-    else: cut_start(lot,SHUTTER_START-start,base["fr"])               # loading shorter than the master hold: cut the hold (the 1s card starts on the shutter)
+    lot=copy.deepcopy(cut); repeat_shutter(lot,secs,SHUTTER_LEN,base["fr"])
     lot["nm"]=f"Recommendation {secs}s loading"
     real.emit(f"rec-{secs}",lot,f"recommendation-{secs}s")
