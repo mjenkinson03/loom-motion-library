@@ -56,10 +56,17 @@ scl=kf([(0,[100,100,100],"hold"),(1.3,[100,100,100],"gentle"),(1.5,[103,103,100]
 opa=kf([(0,[100],"hold"),(T_LIFT1,[100],"in"),(T_GONE,[0],"hold"),(T_RISE,[0],"out"),(T_RISE+0.2,[100],"hold"),(T_OUT,[100],"io"),(T_FADE,[0],"H"),(T_OPEN,[100],"H"),(LOOP,[100],"hold")])
 tr=lambda rot:{"ty":"tr","p":S([0,0]),"a":S([0,0]),"s":S([100,100]),"r":rot,"o":S(100),"sk":S(0),"sa":S(0)}
 W=S([1,1,1,1])
+# Flex about the joint at the bottom of the check (degrees of droop, + = tips down): trailing as the check shoots up, then a damped wobble on each landing.
+WOBBLE=[(0,0),(T_RISE-0.01,0),(T_RISE+0.13,7),(T_APEX-0.0,-3),(T_APEX+0.1,0),(T_LAND-0.02,0),(T_LAND+0.05,10),(T_LAND+0.12,-5),(T_LAND+0.2,3.5),(T_LAND+0.28,-1.5),(T_LAND+0.38,0),(LOOP,0)]
 legs=[]
 for i in range(12):
     size,ps,rot=beam_keys(i)
-    legs.append({"ty":"gr","nm":f"Beam {i+1}","it":[{"ty":"rc","d":1,"s":size,"p":ps,"r":S(0)},{"ty":"fl","c":W,"o":S(100),"r":1},tr(rot)]})
+    beam_g={"ty":"gr","nm":f"Beam {i+1}","it":[{"ty":"rc","d":1,"s":size,"p":ps,"r":S(0)},{"ty":"fl","c":W,"o":S(100),"r":1},tr(rot)]}
+    if i in ARMS:                                     # the check's two arms flex about the joint: a noodle, not a brick
+        sign=-1 if i==7 else 1                        # short arm droops one way, long arm the other (tips trail / droop together)
+        wob=kf([(t,[sign*w],"io") for t,w in WOBBLE])
+        beam_g={"ty":"gr","nm":f"Arm {i+1}","it":[beam_g,{"ty":"tr","p":S(list(V)),"a":S(list(V)),"s":S([100,100]),"r":wob,"o":S(100),"sk":S(0),"sa":S(0)}]}
+    legs.append(beam_g)
 logo={"ddd":0,"ind":1,"ty":4,"nm":"Beams","sr":1,"ks":{"o":opa,"r":S(0),"p":pos,"a":S([0,0,0]),"s":scl},"ao":0,"shapes":legs,"ip":0,"op":round(LOOP*FPS),"st":0,"bm":0}
 lot={"v":"5.7.4","fr":FPS,"ip":0,"op":round(LOOP*FPS),"w":261,"h":1500,"nm":"Outro: bounce check","ddd":0,"assets":[],"meta":{"g":"hand-built generator"},"layers":[logo]}
 lot=wrap(lot,[(0,R_HOLE),(T_LIFT1,R_HOLE),(T_GONE,0),(T_FADE,0),(T_FADE+0.01,R_HOLE),(LOOP,R_HOLE)])

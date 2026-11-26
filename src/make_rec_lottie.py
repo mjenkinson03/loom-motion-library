@@ -59,24 +59,29 @@ warp(base,base["fr"])
 # The number in each card is how long the blue bar takes to load. The shutter plays at the END of the loading (it lasts 1.1s: 1.3s-2.4s in the master
 # timeline) and the bounce outro follows at its normal speed. Nothing is sped up: only the loading hold before the shutter is longer or shorter.
 SHUTTER_START,SHUTTER_LEN=1.3,1.0
-def repeat_shutter(o,n,L,fps):
-    """The shutter (the first L seconds of every animated property) plays n times in a row; the rest (the outro) follows after the last one."""
+def repeat_shutter(o,n,L,pause,D,fps):
+    """The shutter (the first L seconds of every animated property) plays n times, each followed by a pause; the rest (the outro) starts at D."""
+    C=L+pause; shift=D-L
     if isinstance(o,dict):
         for k,v in list(o.items()):
             if k=="k" and isinstance(v,list) and v and isinstance(v[0],dict) and "t" in v[0] and "s" in v[0]:
                 pre=[x for x in v if x["t"]<L*fps-1e-6]; post=[x for x in v if x["t"]>=L*fps-1e-6]
                 out=[]
                 for c in range(n):
-                    for x in pre: y=copy.deepcopy(x); y["t"]=round(x["t"]+c*L*fps,3); out.append(y)
-                for x in post: y=copy.deepcopy(x); y["t"]=round(x["t"]+(n-1)*L*fps,3); out.append(y)
+                    for x in pre: y=copy.deepcopy(x); y["t"]=round(x["t"]+c*C*fps,3); out.append(y)
+                    if pause>0:                                    # hold the resting state through the pause
+                        y=copy.deepcopy(pre[0]); y["t"]=round((c*C+L)*fps,3); out.append(y)
+                for x in post: y=copy.deepcopy(x); y["t"]=round(x["t"]+shift*fps,3); out.append(y)
                 o[k]=out
-            elif k=="op" and isinstance(v,(int,float)): o[k]=round(v+(n-1)*L*fps,3)
-            else: repeat_shutter(v,n,L,fps)
+            elif k=="op" and isinstance(v,(int,float)): o[k]=round(v+shift*fps,3)
+            else: repeat_shutter(v,n,L,pause,D,fps)
     elif isinstance(o,list):
-        for x in o: repeat_shutter(x,n,L,fps)
-# Loading is filled with the shutter: it keeps cycling (1.0s per cycle) until the bar is full, then the 1.0s outro runs. 6s = 6 shutters, 3s = 3, 1s = 1.
+        for x in o: repeat_shutter(x,n,L,pause,D,fps)
+# Loading is filled with the shutter: it keeps cycling (1.0s shutter + 0.5s pause per cycle) until the bar is full, then the 1.0s outro runs. 6s = 4 cycles, 3s = 2, 1s = 1.
 cut=copy.deepcopy(base); cut_start(cut,SHUTTER_START,base["fr"])
 for secs in (6,3,1):
-    lot=copy.deepcopy(cut); repeat_shutter(lot,secs,SHUTTER_LEN,base["fr"])
+    pause=0.5 if secs>1 else 0.0                          # half a second between shutter cycles (the 1s card is a single shutter, no pause)
+    n=round(secs/(SHUTTER_LEN+pause))
+    lot=copy.deepcopy(cut); repeat_shutter(lot,n,SHUTTER_LEN,pause,secs,base["fr"])
     lot["nm"]=f"Recommendation {secs}s loading"
     real.emit(f"rec-{secs}",lot,f"recommendation-{secs}s")
