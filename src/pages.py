@@ -38,7 +38,7 @@ def preview(name):
 <style>html,body{{margin:0;height:100%;background:#0b0b0c;overflow:hidden}}#a{{position:absolute;inset:0}}#a svg{{position:absolute;left:50%;top:50%;translate:-50% -50%;height:412%!important;width:auto!important;overflow:visible!important}}</style></head>
 <body><div id="a"></div><script src="lottie_light.min.js"></script><script src="blk-{name}.gz.js"></script>
 <script>
-{LOAD.replace('@@','')}
+{LOAD.replace('@@',"a.loop=false;a.addEventListener('complete',()=>a.goToAndPlay(0,true));")}   // restart by hand when it ends: the preview must keep repeating
 </script></body></html>'''
 def arrival():
     return f'''<!doctype html><html><head><meta charset="utf-8"><title>Arrival</title>

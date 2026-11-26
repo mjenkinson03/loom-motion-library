@@ -1,11 +1,11 @@
 # Stitchable building blocks for the recommendation sequences, written to lottie/blocks/. All use the same canvas (261 x 1500, logo centred at
 # 130.5, 750) and the same logo, so they can be placed one after another:
 #   shutter-cycle.json  1.5s   the 1.0s shutter, then a 0.5s rest on the full white logo. Starts and ends on the full logo: just set it to loop
-#   gray.json           3.3s   white -> light gray -> dark gray -> light gray -> white, with markers: gray-in (0-0.8s), gray-pulse (0.8-2.8s, loop this one),
-#                              gray-out (2.8-3.3s)
+#   gray.json           2.8s   the gray fade: white -> light gray (gray-in, 0-0.8s), then light -> dark -> light gray (gray-pulse, 0.8-2.8s: loop this marker).
+#                              It never goes back to white: the check outro fades its own white logo in over it.
 #   check-outro.json    0.95s  a white full logo fades in (0.15s) over whatever is on screen, then it nudges, drops and the check rises and settles.
 #                              Layer it over the loader at the moment loading ends and remove the loader: it works from any point.
-# Slow load: shutter-cycle x N -> gray (play gray-in, loop gray-pulse, play gray-out) -> check-outro.   Fast load: shutter-cycle x N -> check-outro.
+# Slow load: shutter-cycle x N -> gray (play gray-in, then loop gray-pulse) -> check-outro.   Fast load: shutter-cycle x N -> check-outro.
 import copy,json,os
 import make_rec_lottie as R               # builds the recommendation files and gives us the master timeline: R.cut = shutter 0-1.0s, outro 1.0-2.0s, reset 2.0-3.05s
 cut=R.cut; fps=cut["fr"]
@@ -73,9 +73,9 @@ def extend(o,secs):
 b=copy.deepcopy(cut); window(b,0,1.0); extend(b,0.5); finish(b,"shutter-cycle",1.5)
 # still logo for the gray block
 still=copy.deepcopy(cut); window(still,0,0.0); freeze(still)
-b=copy.deepcopy(still); colour(b,[(0,W),(0.8,L),(1.8,D),(2.8,L),(3.3,W)])
-b["markers"]=[{"tm":round(t*fps,3),"cm":n,"dr":round(d*fps,3)} for n,t,d in [("gray-in",0,0.8),("gray-pulse",0.8,2.0),("gray-out",2.8,0.5)]]
-finish(b,"gray",3.3)
+b=copy.deepcopy(still); colour(b,[(0,W),(0.8,L),(1.8,D),(2.8,L)])
+b["markers"]=[{"tm":round(t*fps,3),"cm":n,"dr":round(d*fps,3)} for n,t,d in [("gray-in",0,0.8),("gray-pulse",0.8,2.0)]]
+finish(b,"gray",2.8)
 # check outro with a 0.15s lead-in: a white full logo fades in over whatever is under it (the loader can be stopped at any moment), then the outro plays
 LEAD=0.15
 def lead_in(o,secs):
