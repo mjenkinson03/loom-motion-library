@@ -90,7 +90,7 @@ for secs in (6,3,1):
 # until the 15s load finishes, then it warms back to white as the 1s check outro plays.
 DARK=[0.15,0.15,0.17,1]; LIGHT=[0.50,0.50,0.53,1]; WHITE=[1,1,1,1]       # the logo never goes back to white while it waits: dark gray <-> light gray
 T_FADE0,T_FADE1=7.5,8.3          # the fade starts the moment the last shutter has rested (no dead air) and lands on the dark gray by about 8s
-PULSE=1.5                                          # one full gray cycle (dark -> light -> dark) takes 1.5s, i.e. 0.75s each way
+PULSE=2.0                                          # one full gray cycle (dark -> light -> dark) takes 2.0s, i.e. 1.0s each way
 def colour_keys(fps):
     half=PULSE/2; n=int((15.0-T_FADE1)//half)             # whole half-swings that fit before 15s
     pts=[(0,WHITE),(T_FADE0,WHITE),(T_FADE1,DARK)]+[(T_FADE1+half*(k+1),LIGHT if k%2==0 else DARK) for k in range(n)]+[(15.0,LIGHT),(15.5,WHITE),(40,WHITE)]
