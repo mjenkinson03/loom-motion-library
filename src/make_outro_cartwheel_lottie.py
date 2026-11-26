@@ -51,7 +51,7 @@ def kf1(vals): return kf([(t,[v],e) for t,v,e in vals])
 px=kf1([(0,CX,"hold"),(T_SPIN0,CX,"io"),(T_SPIN1,CX+RUN,"H"),(T_SPIN1+0.001,CX+RUN,"out"),(T_LAND,CX,"hold"),(LOOP,CX,"hold")])
 py=kf1([(0,CY,"hold"),(T_SPIN1,CY,"out"),(T_HOP,CY-34,"in"),(T_LAND,CY,"hold"),(LOOP,CY,"hold")])
 pos={"a":1,"s":True,"x":px,"y":py,"z":S(0)}
-lrot=kf1([(0,0,"hold"),(T_SPIN0,0,"in"),(T_SPIN1,1080,"lin"),(T_LAND,1440,"hold"),(T_FADE,1440,"H"),(T_OPEN,0,"hold"),(LOOP,0,"hold")])
+lrot=kf1([(0,0,"hold"),(T_SPIN0,0,"in"),(T_SPIN1,360,"lin"),(T_LAND,720,"hold"),(T_FADE,720,"H"),(T_OPEN,0,"hold"),(LOOP,0,"hold")])
 scl=kf([(0,[100,100,100],"hold"),(1.3,[100,100,100],"gentle"),(1.5,[103,103,100],"snapin"),(1.68,[96,96,100],"hold"),(1.76,[96,96,100],"snapout"),(2.1,[102,102,100],"settle"),(2.4,[100,100,100],"hold"),
         (T_LAND-0.02,[100,100,100],"out"),(T_LAND+0.05,[108,92,100],"io"),(T_DONE,[100,100,100],"hold"),
         (T_OUT,[100,100,100],"io"),(T_FADE,[104,104,100],"H"),(T_OPEN,[96,96,100],"snapout"),(T_SET,[102,102,100],"settle"),(T_REST,[100,100,100],"hold"),(LOOP,[100,100,100],"hold")])
