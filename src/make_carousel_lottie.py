@@ -6,7 +6,7 @@ import math
 from emit import emit
 FPS=60
 MOVE,HOLD=0.65,1.5; STEP=MOVE+HOLD; N=4; LOOP=N*STEP
-W,H=743,486; CX,CY=371.5,243; T=52; K=1        # the whole canvas is Figma's 743x486 frame, so the tile is the same small size as in the design
+W,H=530,347; CX,CY=265,173.5; T=52; K=1        # the design is 743x486; cropping the canvas to 530x347 shows the same 52px tile about 40% larger
 S=lambda v:{"a":0,"k":v}
 WH=S([1,1,1,1])
 EASE={"o":{"x":[0.7],"y":[0]},"i":{"x":[0.25],"y":[1]}}      # strong ease in and out
