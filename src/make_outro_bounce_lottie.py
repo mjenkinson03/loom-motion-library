@@ -4,7 +4,7 @@
 # (v2: the logo now drops right off the bottom of the screen first; while it is out of sight it becomes the check, which bounces back up into place.)
 import math
 from emit import emit
-FPS=60; LOOP=6.8
+FPS=60; LOOP=6.6
 CX,CY=130.5,750        # tall comp (1500) so the logo can fall completely out of sight before the check rises
 BEZ={"hold":((0.33,0),(0.67,1)),"gentle":((0.33,0),(0.67,1)),"snapin":((0.75,0),(1,1)),"snapout":((0.1,0.9),(0.3,1)),"settle":((0.4,0),(0.6,1)),
      "click":((0.34,1.56),(0.64,1)),"io":((0.45,0),(0.55,1)),"out":((0.22,1),(0.36,1)),"in":((0.55,0),(1,0.45))}
@@ -19,9 +19,9 @@ def kf(vals):
     return {"a":1,"k":k}
 S=lambda v:{"a":0,"k":v}
 # timeline (seconds)
-T_LIFT0,T_LIFT1,T_GONE,T_RISE,T_APEX,T_LAND,T_UP2,T_DONE=2.4,2.85,3.2,3.45,3.8,4.0,4.12,4.24
-T_OUT,T_FADE,T_OPEN,T_SET,T_REST=5.2,5.7,6.0,6.45,6.7
-OFF=640            # far enough below that the logo is completely out of the card
+T_LIFT0,T_LIFT1,T_GONE,T_RISE,T_APEX,T_LAND,T_UP2,T_DONE=2.4,2.7,2.9,2.92,3.2,3.38,3.48,3.58
+T_OUT,T_FADE,T_OPEN,T_SET,T_REST=4.9,5.4,5.7,6.15,6.4
+OFF=140            # the floor: the logo's bottom lands just above the blue loading bar (fading to 0% on the way down, back to 100% on the way up)
 def beam(r): return [24,r-40],[0,-(40+r)/2]
 def arm(p0,p1):
     L=math.dist(p0,p1); c=((p0[0]+p1[0])/2,(p0[1]+p1[1])/2); u=((p1[0]-p0[0])/L,(p1[1]-p0[1])/L)
@@ -52,7 +52,7 @@ pos=kf([(0,Y(0),"hold"),(T_LIFT0,Y(0),"out"),(T_LIFT1,Y(-26),"in"),(T_GONE,Y(OFF
 scl=kf([(0,[100,100,100],"hold"),(1.3,[100,100,100],"gentle"),(1.5,[103,103,100],"snapin"),(1.68,[96,96,100],"hold"),(1.76,[96,96,100],"snapout"),(2.1,[102,102,100],"settle"),(2.4,[100,100,100],"hold"),
         (T_LIFT1,[98,104,100],"in"),(T_GONE,[92,114,100],"H"),(T_RISE,[92,112,100],"out"),(T_APEX,[100,100,100],"hold"),(T_LAND-0.02,[100,100,100],"out"),(T_LAND+0.04,[106,94,100],"io"),(T_UP2,[100,100,100],"hold"),
         (T_OUT,[100,100,100],"io"),(T_FADE,[104,104,100],"H"),(T_OPEN,[96,96,100],"snapout"),(T_SET,[102,102,100],"settle"),(T_REST,[100,100,100],"hold"),(LOOP,[100,100,100],"hold")])
-opa=kf([(0,[100],"hold"),(T_OUT,[100],"io"),(T_FADE,[0],"H"),(T_OPEN,[100],"H"),(LOOP,[100],"hold")])
+opa=kf([(0,[100],"hold"),(T_LIFT1,[100],"in"),(T_GONE,[0],"hold"),(T_RISE,[0],"out"),(T_RISE+0.2,[100],"hold"),(T_OUT,[100],"io"),(T_FADE,[0],"H"),(T_OPEN,[100],"H"),(LOOP,[100],"hold")])
 tr=lambda rot:{"ty":"tr","p":S([0,0]),"a":S([0,0]),"s":S([100,100]),"r":rot,"o":S(100),"sk":S(0),"sa":S(0)}
 W=S([1,1,1,1])
 legs=[]
