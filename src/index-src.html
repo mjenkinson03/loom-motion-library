@@ -32,7 +32,7 @@ h2{font-weight:400;font-size:clamp(32px,3.4vw,48px);line-height:1.05;letter-spac
 .live iframe{position:absolute;left:0;top:0;width:1280px;height:800px;border:0;transform-origin:0 0;background:#0b0b0c}
 .live .ph{position:absolute;inset:0;display:grid;place-items:center;color:#8a8a8a;font:13px var(--mono);pointer-events:none}
 .empty .live{background:transparent;border:1.5px dashed #cfcfcf;box-shadow:none}.empty .ph{color:#9a9a9a}.empty .cardtitle{color:#9a9a9a}
-.files{margin-top:40px;font:13px/1.5 var(--mono);color:var(--sub)}.files .fh{margin:22px 0 8px;color:var(--ink)}.files .fh span{display:block;margin-top:4px;color:var(--sub);max-width:820px}.files .frow{display:grid;grid-template-columns:minmax(0,260px) 1fr;gap:20px;padding:7px 0;border-top:1px solid var(--line)}.files a{color:var(--blue);text-decoration:none}.files a:hover{text-decoration:underline}
+.files{margin-top:40px;font:13px/1.5 var(--mono);color:var(--sub)}.files .fh{margin:22px 0 8px;color:var(--ink)}.files .fh span{display:block;margin-top:4px;color:var(--sub);max-width:820px}.files .frow{display:grid;grid-template-columns:128px minmax(0,230px) 1fr;gap:24px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}.files .pv{width:128px}.files a{color:var(--blue);text-decoration:none}.files a:hover{text-decoration:underline}
 @media(max-width:900px){.grid.c2,.grid.c3{grid-template-columns:1fr}.wrap{padding:0 24px}}
 </style></head>
 <body>
@@ -52,14 +52,10 @@ var GROUPS=[
   {label:'C',tag:'Lottie',title:'1 second',src:'items/rec-1.html'},
   {label:'D',tag:'Lottie',title:'15 seconds',src:'items/rec-15.html'}],
   files:[
-   {h:'Stitchable blocks',note:'Same 261 x 1500 canvas, same logo, same centre point, so they drop one after another. Slow load: shutter cycle x N, gray in, gray pulse x N, gray out, check outro. Fast load: shutter cycle x N, check outro.'},
-   {name:'shutter-cycle.json',href:'lottie/blocks/shutter-cycle.json',note:'1.0s. Starts and ends on the full white logo; repeat as many times as you need (hold the full logo for any rest between).'},
-   {name:'gray-in.json',href:'lottie/blocks/gray-in.json',note:'0.8s. Full logo, white to light gray.'},
-   {name:'gray-pulse.json',href:'lottie/blocks/gray-pulse.json',note:'2.0s. Light gray, to dark gray, back to light gray; repeat as many times as you need.'},
-   {name:'gray-out.json',href:'lottie/blocks/gray-out.json',note:'0.5s. Full logo, light gray to white.'},
-   {name:'gray.json',href:'lottie/blocks/gray.json',note:'3.3s. The three gray blocks in one file, with markers: gray-in (0 to 0.8s), gray-pulse (0.8 to 2.8s, loop this marker), gray-out (2.8 to 3.3s). Same look as the three separate files.'},
-   {name:'check-outro-fade-in.json',href:'lottie/blocks/check-outro-fade-in.json',note:'0.95s. The check outro with a 0.15s lead-in: a white full logo fades in on top of whatever is on screen, then the check plays. Use it to cut to the check at any moment (layer it over the loader, then remove the loader).'},
-   {name:'check-outro.json',href:'lottie/blocks/check-outro.json',note:'0.8s. Starts on the full white logo, ends on the settled check (no fade, no reset).'}]},
+   {h:'Stitchable blocks',note:'Same 261 x 1500 canvas, same logo, same centre point, so they drop one after another. Slow load: shutter cycle x N, then gray (play gray-in, loop gray-pulse, play gray-out), then check outro. Fast load: shutter cycle x N, then check outro.'},
+   {name:'shutter-cycle.json',src:'items/blk-shutter-cycle.html',href:'lottie/blocks/shutter-cycle.json',note:'1.0s. Starts and ends on the full white logo; repeat as many times as you need (hold the full logo for any rest between).'},
+   {name:'gray.json',src:'items/blk-gray.html',href:'lottie/blocks/gray.json',note:'3.3s. White to light gray to dark gray and back, then to white. Markers: gray-in (0 to 0.8s), gray-pulse (0.8 to 2.8s, loop this marker), gray-out (2.8 to 3.3s).'},
+   {name:'check-outro.json',src:'items/blk-check-outro.html',href:'lottie/blocks/check-outro.json',note:'0.95s. A white full logo fades in over whatever is on screen (0.15s), then it nudges, drops and the check rises and settles. Layer it over the loader when loading ends, then remove the loader; it works from any point.'}]},
 
 
  {id:'cinema',title:'Cinema',sub:'Concepts connected to things that exist in cinema and film.',cols:3,items:[
@@ -104,8 +100,10 @@ GROUPS.forEach(function(gp,gi){
   });
 });
 GROUPS.forEach(function(gp){if(!gp.files)return;var sec=document.getElementById(gp.id),box=document.createElement('div');box.className='files wrap';
-  box.innerHTML=gp.files.map(function(f){return f.name?'<div class="frow"><a href="'+f.href+'" download>'+f.name+'</a><span>'+f.note+'</span></div>':'<div class="fh"><b>'+f.h+'</b>'+(f.note?'<span>'+f.note+'</span>':'')+'</div>'}).join('');
-  sec.appendChild(box)});
+  box.innerHTML=gp.files.map(function(f){return f.name?'<div class="frow"><div class="live pv" data-src="'+f.src+'"><iframe title="'+f.name+'"></iframe></div><a href="'+f.href+'" download>'+f.name+'</a><span>'+f.note+'</span></div>':'<div class="fh"><b>'+f.h+'</b>'+(f.note?'<span>'+f.note+'</span>':'')+'</div>'}).join('');
+  sec.appendChild(box);
+  box.querySelectorAll('.pv').forEach(function(pv){var f=pv.querySelector('iframe');pv._f=f;boxes.push(pv);fit(pv);
+    var io=new IntersectionObserver(function(es){if(es[0].isIntersecting&&!f.srcdoc){f.srcdoc=INLINE[pv.dataset.src];io.disconnect()}},{rootMargin:'400px'});io.observe(pv)})});
 addEventListener('resize',function(){boxes.forEach(fit)});
 </script>
 </body></html>

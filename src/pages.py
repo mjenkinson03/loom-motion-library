@@ -32,6 +32,14 @@ const BAR_FULL={bar_full};
 const setBar=s=>document.querySelector('.bar i').style.width=(Math.min(1,s/BAR_FULL)*100)+'%';
 {LOAD.replace('@@',"a.addEventListener('enterFrame',e=>setBar(e.currentTime/60));")}
 </script></body></html>'''
+def preview(name):
+    """A bare looping page for one building block, big logo, no bar (shown small beside the file in the Recommendation section)."""
+    return f'''<!doctype html><html><head><meta charset="utf-8"><title>{name}</title>
+<style>html,body{{margin:0;height:100%;background:#0b0b0c;overflow:hidden}}#a{{position:absolute;inset:0}}#a svg{{position:absolute;left:50%;top:50%;translate:-50% -50%;height:412%!important;width:auto!important;overflow:visible!important}}</style></head>
+<body><div id="a"></div><script src="lottie_light.min.js"></script><script src="blk-{name}.gz.js"></script>
+<script>
+{LOAD.replace('@@','')}
+</script></body></html>'''
 def arrival():
     return f'''<!doctype html><html><head><meta charset="utf-8"><title>Arrival</title>
 <style>html,body{{margin:0;height:100%;background:#0a0a0c;overflow:hidden}}#a{{position:absolute;inset:0;transform:scale(.75);transform-origin:50% 42%}}#a svg{{width:100%!important;height:100%!important}}
@@ -64,6 +72,7 @@ PAGES={
 
 for secs in (6,3,1,15):   # recommendation row: same page as the bounce outro; the blue bar takes exactly `secs` seconds to fill (BAR_FULL)
     PAGES[f"rec-{secs}"]=outro(f"rec-{secs}",f"Recommendation {secs}s",secs).replace("</style>","#a{display:block}#a svg{position:absolute;left:50%;top:50%;translate:-50% -50%;height:218%!important;width:auto!important}</style>")
+for blk in ("shutter-cycle","gray","check-outro"): PAGES[f"blk-{blk}"]=preview(blk)
 if __name__=="__main__":
     for k,v in PAGES.items(): open(f"items/{k}.html","w").write(v)
     print("wrote",len(PAGES),"pages")

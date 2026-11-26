@@ -1,0 +1,9 @@
+<!doctype html><html><head><meta charset="utf-8"><title>shutter-cycle</title>
+<style>html,body{margin:0;height:100%;background:#0b0b0c;overflow:hidden}#a{position:absolute;inset:0}#a svg{position:absolute;left:50%;top:50%;translate:-50% -50%;height:412%!important;width:auto!important;overflow:visible!important}</style></head>
+<body><div id="a"></div><script src="lottie_light.min.js"></script><script src="blk-shutter-cycle.gz.js"></script>
+<script>
+const FIX=new URLSearchParams(location.search).get('t');
+new Response(new Blob([Uint8Array.from(atob(window.LOADER_GZ),c=>c.charCodeAt(0))]).stream().pipeThrough(new DecompressionStream('gzip'))).json()
+ .then(data=>{const a=lottie.loadAnimation({container:document.getElementById('a'),renderer:'svg',loop:true,autoplay:FIX===null,animationData:data});
+   if(FIX!==null)a.addEventListener('DOMLoaded',()=>a.goToAndStop(+FIX*1000,false));});
+</script></body></html>
