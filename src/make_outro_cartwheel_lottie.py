@@ -4,7 +4,7 @@
 import math
 from emit import emit
 from holefix import wrap,R_HOLE
-FPS=60; LOOP=5.7
+FPS=60; LOOP=5.4
 CX,CY=350,124          # wide comp (700) so the cartwheel has room
 BEZ={"hold":((0.33,0),(0.67,1)),"gentle":((0.33,0),(0.67,1)),"snapin":((0.75,0),(1,1)),"snapout":((0.1,0.9),(0.3,1)),"settle":((0.4,0),(0.6,1)),
      "click":((0.34,1.56),(0.64,1)),"io":((0.45,0),(0.55,1)),"out":((0.22,1),(0.36,1)),"in":((0.55,0),(1,0.45)),"lin":((0,0),(1,1))}
@@ -19,9 +19,9 @@ def kf(vals):
     return {"a":1,"k":k}
 S=lambda v:{"a":0,"k":v}
 # timeline (seconds)
-T_SPIN0,T_SPIN1,T_HOP,T_LAND,T_DONE=2.4,2.75,2.9,3.07,3.17
-T_M0,T_M1=2.8,3.02
-T_OUT,T_FADE,T_OPEN,T_SET,T_REST=4.3,4.7,4.9,5.35,5.6
+T_SPIN0,T_SPIN1,T_HOP,T_LAND,T_DONE=2.4,2.6,2.72,2.85,2.93
+T_M0,T_M1=2.6,2.78
+T_OUT,T_FADE,T_OPEN,T_SET,T_REST=4.0,4.4,4.6,5.05,5.3
 RUN=-110           # how far left the logo drifts during the spin (the run-up)
 def beam(r): return [24,r-40],[0,-(40+r)/2]
 def arm(p0,p1):
@@ -52,7 +52,7 @@ def kf1(vals): return kf([(t,[v],e) for t,v,e in vals])
 px=kf1([(0,CX,"hold"),(T_SPIN0,CX,"io"),(T_SPIN1,CX+RUN,"H"),(T_SPIN1+0.001,CX+RUN,"out"),(T_LAND,CX,"hold"),(LOOP,CX,"hold")])
 py=kf1([(0,CY,"hold"),(T_SPIN1,CY,"out"),(T_HOP,CY-34,"in"),(T_LAND,CY,"hold"),(LOOP,CY,"hold")])
 pos={"a":1,"s":True,"x":px,"y":py,"z":S(0)}
-lrot=kf1([(0,0,"hold"),(T_SPIN0,0,"in"),(T_SPIN1,360,"lin"),(T_LAND,720,"hold"),(T_FADE,720,"H"),(T_OPEN,0,"hold"),(LOOP,0,"hold")])
+lrot=kf1([(0,0,"hold"),(T_SPIN0,0,"in"),(T_SPIN1,180,"lin"),(T_LAND,360,"hold"),(T_FADE,360,"H"),(T_OPEN,0,"hold"),(LOOP,0,"hold")])
 scl=kf([(0,[100,100,100],"hold"),(1.3,[100,100,100],"gentle"),(1.5,[103,103,100],"snapin"),(1.68,[96,96,100],"hold"),(1.76,[96,96,100],"snapout"),(2.1,[102,102,100],"settle"),(2.4,[100,100,100],"hold"),
         (T_LAND-0.02,[100,100,100],"out"),(T_LAND+0.05,[108,92,100],"io"),(T_DONE,[100,100,100],"hold"),
         (T_OUT,[100,100,100],"io"),(T_FADE,[104,104,100],"H"),(T_OPEN,[96,96,100],"snapout"),(T_SET,[102,102,100],"settle"),(T_REST,[100,100,100],"hold"),(LOOP,[100,100,100],"hold")])
