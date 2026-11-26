@@ -45,10 +45,11 @@ h2{font-weight:400;font-size:clamp(32px,3.4vw,48px);line-height:1.05;letter-spac
 <script>
 /* ---- add new riffs here: put a page in items/ and add a line to a group, then run build.py ---- */
 var GROUPS=[
- {id:'rec',title:'Recommendation',numLabel:'★',sub:'Three loading times: 6, 3 and 1 second (how long the blue bar takes). The 1-second shutter keeps cycling, with a half-second pause between, to fill the loading time; then the 1-second bounce outro plays.',cols:3,items:[
+ {id:'rec',title:'Recommendation',numLabel:'★',sub:'Four loading times: 6, 3, 1 and 15 seconds (how long the blue bar takes). The 1-second shutter keeps cycling, with a half-second pause between, to fill the loading time; then the 1-second bounce outro plays. The 15 second one is the slow-load case: after 8 seconds the shutter stops and the logo fades to gray and pulses until it finishes.',cols:3,items:[
   {label:'A',tag:'Lottie',title:'6 seconds',src:'items/rec-6.html'},
   {label:'B',tag:'Lottie',title:'3 seconds',src:'items/rec-3.html'},
-  {label:'C',tag:'Lottie',title:'1 second',src:'items/rec-1.html'}]},
+  {label:'C',tag:'Lottie',title:'1 second',src:'items/rec-1.html'},
+  {label:'D',tag:'Lottie',title:'15 seconds',src:'items/rec-15.html'}]},
  {id:'cinema',title:'Cinema',sub:'Concepts connected to things that exist in cinema and film.',cols:3,items:[
   {tag:'Lottie',title:'Movie reel',src:'items/movie-reel.html'},
   {tag:'Lottie',title:'Shutter',src:'items/shutter.html'},

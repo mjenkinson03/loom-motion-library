@@ -62,7 +62,7 @@ PAGES={
  "carousel":page("carousel","Icon carousel","full").replace("</style>","#a{transform:translateY(-9%)}.bar{top:64.5%}</style>"),   # small tile: tile + bar centred as a pair
 }
 
-for secs in (6,3,1):   # recommendation row: same page as the bounce outro; the blue bar takes exactly `secs` seconds to fill (BAR_FULL)
+for secs in (6,3,1,15):   # recommendation row: same page as the bounce outro; the blue bar takes exactly `secs` seconds to fill (BAR_FULL)
     PAGES[f"rec-{secs}"]=outro(f"rec-{secs}",f"Recommendation {secs}s",secs).replace("</style>","#a{display:block}#a svg{position:absolute;left:50%;top:50%;translate:-50% -50%;height:218%!important;width:auto!important}</style>")
 if __name__=="__main__":
     for k,v in PAGES.items(): open(f"items/{k}.html","w").write(v)

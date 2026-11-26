@@ -85,3 +85,25 @@ for secs in (6,3,1):
     lot=copy.deepcopy(cut); repeat_shutter(lot,n,SHUTTER_LEN,pause,secs,base["fr"])
     lot["nm"]=f"Recommendation {secs}s loading"
     real.emit(f"rec-{secs}",lot,f"recommendation-{secs}s")
+
+# ---- 15 seconds ("error"): the shutter cycles for the first 8s, then stops: the logo fades to a subtle gray and slowly pulses between light gray and white
+# until the 15s load finishes (ending on white), then the 1s check outro plays.
+GRAY=[0.62,0.62,0.65,1]; WHITE=[1,1,1,1]
+def colour_keys(fps):
+    half=6/7                                               # 9s -> 15s is 7 half-pulses, so it ends on white
+    pts=[(0,WHITE),(8.0,WHITE),(9.0,GRAY)]+[(9.0+half*(k+1),WHITE if k%2==0 else GRAY) for k in range(7)]
+    ks=[]
+    for i,(t,c) in enumerate(pts):
+        d={"t":round(t*fps,3),"s":c}
+        if i<len(pts)-1: d.update({"o":{"x":[0.45],"y":[0]},"i":{"x":[0.55],"y":[1]}})
+        ks.append(d)
+    return {"a":1,"k":ks}
+def recolour(o,fps):
+    if isinstance(o,dict):
+        if o.get("ty")=="fl": o["c"]=colour_keys(fps)
+        for v in o.values(): recolour(v,fps)
+    elif isinstance(o,list):
+        for x in o: recolour(x,fps)
+lot=copy.deepcopy(cut); repeat_shutter(lot,5,SHUTTER_LEN,0.5,15,base["fr"])     # 5 shutter cycles = 7.5s, then it holds still
+recolour(lot,base["fr"]); lot["nm"]="Recommendation 15s (error)"
+real.emit("rec-15",lot,"recommendation-15s")
