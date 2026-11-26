@@ -1,0 +1,13 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Shutter + check</title>
+<style>html,body{margin:0;height:100%;background:#0b0b0c;overflow:hidden}#a{position:absolute;inset:0 0 auto 0;height:84%;display:grid;place-items:center}#a svg{height:36%!important;width:auto!important;overflow:visible!important}
+.bar{position:absolute;left:50%;top:73.5%;width:58vh;height:2vh;min-height:3px;transform:translateX(-50%);background:#1e1e20;overflow:hidden}.bar i{display:block;height:100%;width:0;background:#1b6ae0;}</style></head>
+<body><div id="a"></div><div class="bar"><i></i></div>
+<script src="lottie_light.min.js"></script><script src="outro-check.gz.js"></script>
+<script>
+const BAR_FULL=2.42;
+const setBar=s=>document.querySelector('.bar i').style.width=(Math.min(1,s/BAR_FULL)*100)+'%';
+const FIX=new URLSearchParams(location.search).get('t');
+new Response(new Blob([Uint8Array.from(atob(window.LOADER_GZ),c=>c.charCodeAt(0))]).stream().pipeThrough(new DecompressionStream('gzip'))).json()
+ .then(data=>{const a=lottie.loadAnimation({container:document.getElementById('a'),renderer:'svg',loop:true,autoplay:FIX===null,animationData:data});a.addEventListener('enterFrame',e=>setBar(e.currentTime/60));
+   if(FIX!==null)a.addEventListener('DOMLoaded',()=>a.goToAndStop(+FIX*1000,false));});
+</script></body></html>
