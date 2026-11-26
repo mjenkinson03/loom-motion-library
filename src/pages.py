@@ -54,7 +54,7 @@ PAGES={
  "unfold":page("unfold","Unfold","std"),
  "tunnel":page("tunnel","Tunnel","full"),
  "assemble":page("assemble","Assemble","full"),
- "outro-bounce":outro("outro-bounce","Bounce check",2.4),
+ "outro-bounce":outro("outro-bounce","Bounce check",2.4).replace("</style>","#a{display:block}#a svg{position:absolute;left:50%;top:50%;translate:-50% -50%;height:218%!important;width:auto!important}</style>"),   # comp is 1500 tall (logo falls off screen): same on-screen scale as the 248-tall comps
  "outro-check":outro("outro-check","Shutter + check",2.42),
  "carousel":page("carousel","Icon carousel","full").replace("</style>","#a{transform:translateY(-9%)}.bar{top:64.5%}</style>"),   # small tile: tile + bar centred as a pair
 }
