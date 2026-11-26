@@ -32,6 +32,7 @@ h2{font-weight:400;font-size:clamp(32px,3.4vw,48px);line-height:1.05;letter-spac
 .live iframe{position:absolute;left:0;top:0;width:1280px;height:800px;border:0;transform-origin:0 0;background:#0b0b0c}
 .live .ph{position:absolute;inset:0;display:grid;place-items:center;color:#8a8a8a;font:13px var(--mono);pointer-events:none}
 .empty .live{background:transparent;border:1.5px dashed #cfcfcf;box-shadow:none}.empty .ph{color:#9a9a9a}.empty .cardtitle{color:#9a9a9a}
+.files{margin-top:40px;font:13px/1.5 var(--mono);color:var(--sub)}.files .fh{margin:22px 0 8px;color:var(--ink)}.files .fh span{display:block;margin-top:4px;color:var(--sub);max-width:820px}.files .frow{display:grid;grid-template-columns:minmax(0,260px) 1fr;gap:20px;padding:7px 0;border-top:1px solid var(--line)}.files a{color:var(--blue);text-decoration:none}.files a:hover{text-decoration:underline}
 @media(max-width:900px){.grid.c2,.grid.c3{grid-template-columns:1fr}.wrap{padding:0 24px}}
 </style></head>
 <body>
@@ -49,7 +50,20 @@ var GROUPS=[
   {label:'A',tag:'Lottie',title:'6 seconds',src:'items/rec-6.html'},
   {label:'B',tag:'Lottie',title:'3 seconds',src:'items/rec-3.html'},
   {label:'C',tag:'Lottie',title:'1 second',src:'items/rec-1.html'},
-  {label:'D',tag:'Lottie',title:'15 seconds',src:'items/rec-15.html'}]},
+  {label:'D',tag:'Lottie',title:'15 seconds',src:'items/rec-15.html'}],
+  files:[
+   {h:'Stitchable blocks',note:'Same 261 x 1500 canvas, same logo, same centre point, so they drop one after another. Slow load: shutter cycle x N, gray in, gray pulse x N, gray out, check outro. Fast load: shutter cycle x N, check outro.'},
+   {name:'shutter-cycle.json',href:'lottie/blocks/shutter-cycle.json',note:'1.0s. Starts and ends on the full white logo; repeat as many times as you need (hold the full logo for any rest between).'},
+   {name:'gray-in.json',href:'lottie/blocks/gray-in.json',note:'0.8s. Full logo, white to light gray.'},
+   {name:'gray-pulse.json',href:'lottie/blocks/gray-pulse.json',note:'2.0s. Light gray, to dark gray, back to light gray; repeat as many times as you need.'},
+   {name:'gray-out.json',href:'lottie/blocks/gray-out.json',note:'0.5s. Full logo, light gray to white.'},
+   {name:'check-outro.json',href:'lottie/blocks/check-outro.json',note:'0.8s. Starts on the full white logo, ends on the settled check (no fade, no reset).'},
+   {h:'Full sequences (as shown above)'},
+   {name:'recommendation-6s.json',href:'lottie/recommendation-6s.json',note:'A. 6s loading. 8.05s loop.'},
+   {name:'recommendation-3s.json',href:'lottie/recommendation-3s.json',note:'B. 3s loading. 5.05s loop.'},
+   {name:'recommendation-1s.json',href:'lottie/recommendation-1s.json',note:'C. 1s loading. 3.05s loop.'},
+   {name:'recommendation-15s.json',href:'lottie/recommendation-15s.json',note:'D. 15s loading, shutter then gray pulse. 17.05s loop.'}]},
+
  {id:'cinema',title:'Cinema',sub:'Concepts connected to things that exist in cinema and film.',cols:3,items:[
   {tag:'Lottie',title:'Movie reel',src:'items/movie-reel.html'},
   {tag:'Lottie',title:'Shutter',src:'items/shutter.html'},
@@ -91,6 +105,9 @@ GROUPS.forEach(function(gp,gi){
     io.observe(box);
   });
 });
+GROUPS.forEach(function(gp){if(!gp.files)return;var sec=document.getElementById(gp.id),box=document.createElement('div');box.className='files wrap';
+  box.innerHTML=gp.files.map(function(f){return f.name?'<div class="frow"><a href="'+f.href+'" download>'+f.name+'</a><span>'+f.note+'</span></div>':'<div class="fh"><b>'+f.h+'</b>'+(f.note?'<span>'+f.note+'</span>':'')+'</div>'}).join('');
+  sec.appendChild(box)});
 addEventListener('resize',function(){boxes.forEach(fit)});
 </script>
 </body></html>
