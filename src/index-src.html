@@ -36,7 +36,7 @@ h2{font-weight:400;font-size:clamp(32px,3.4vw,48px);line-height:1.05;letter-spac
 </style></head>
 <body>
 <header class="top"><div class="wrap"><a class="brand" href="#top">Motion Library</a>
-<nav><a href="#cinema">Cinema</a><a href="#d3">3D</a><a href="#geo">Geometric</a><a href="#atl">Atlassian</a><a href="#outro">Outro</a></nav><span></span></div></header>
+<nav><a href="#rec">Recommendation</a><a href="#cinema">Cinema</a><a href="#d3">3D</a><a href="#geo">Geometric</a><a href="#atl">Atlassian</a><a href="#outro">Outro</a></nav><span></span></div></header>
 <main id="top">
 <div class="herob"><canvas id="waves" aria-hidden="true"></canvas>
 <div class="wrap hero"><div class="eyebrow">Loom · Motion experiments</div>
@@ -45,6 +45,10 @@ h2{font-weight:400;font-size:clamp(32px,3.4vw,48px);line-height:1.05;letter-spac
 <script>
 /* ---- add new riffs here: put a page in items/ and add a line to a group, then run build.py ---- */
 var GROUPS=[
+ {id:'rec',title:'Recommendation',numLabel:'★',sub:'The same sequence at three lengths: the shutter to start, the bounce to close. Lengths are the full loop: 6, 3 and 1 second.',cols:3,items:[
+  {label:'A',tag:'Lottie',title:'6 seconds',src:'items/rec-6.html'},
+  {label:'B',tag:'Lottie',title:'3 seconds',src:'items/rec-3.html'},
+  {label:'C',tag:'Lottie',title:'1 second',src:'items/rec-1.html'}]},
  {id:'cinema',title:'Cinema',sub:'Concepts connected to things that exist in cinema and film.',cols:3,items:[
   {tag:'Lottie',title:'Movie reel',src:'items/movie-reel.html'},
   {tag:'Lottie',title:'Shutter',src:'items/shutter.html'},
@@ -68,16 +72,16 @@ var GROUPS=[
   {tag:'Lottie',title:'Fan',src:'items/outro-fan.html'},
   {tag:'Lottie',title:'Drop',src:'items/outro-drop.html'}]}
 ];
-var VW=1280, boxes=[], n=0, root=document.getElementById('sections');
+var VW=1280, boxes=[], n=0, si=0, root=document.getElementById('sections');
 function fit(b){b._f.style.transform='scale('+b.clientWidth/VW+')'}
 GROUPS.forEach(function(gp,gi){
   var sec=document.createElement('section');sec.className='s';sec.id=gp.id;
-  sec.innerHTML='<div class="wrap"><div class="sh"><div><div class="num">0'+(gi+1)+'</div><h2>'+gp.title+'</h2>'+(gp.sub?'<p class="secsub">'+gp.sub+'</p>':'')+'</div></div><div class="grid c'+gp.cols+'"></div></div>';
+  sec.innerHTML='<div class="wrap"><div class="sh"><div><div class="num">'+(gp.numLabel||('0'+(++si)))+'</div><h2>'+gp.title+'</h2>'+(gp.sub?'<p class="secsub">'+gp.sub+'</p>':'')+'</div></div><div class="grid c'+gp.cols+'"></div></div>';
   root.appendChild(sec);var grid=sec.querySelector('.grid');
   gp.items.forEach(function(it){
-    n++;var card=document.createElement('div');
-    if(it.empty){card.className='empty';card.innerHTML='<span class="tag">Open slot</span><div class="cardhead"><div class="cardtitle">'+n+' · Next riff</div></div><div class="live"><div class="ph">Empty</div></div>';grid.appendChild(card);return}
-    card.innerHTML='<span class="tag">'+it.tag+'</span><div class="cardhead"><div class="cardtitle">'+n+' · '+it.title+'</div></div><div class="live"><iframe title="'+it.title+'"></iframe><div class="ph">Loading…</div></div>';
+    var lab=it.label||(++n);var card=document.createElement('div');
+    if(it.empty){card.className='empty';card.innerHTML='<span class="tag">Open slot</span><div class="cardhead"><div class="cardtitle">'+lab+' · Next riff</div></div><div class="live"><div class="ph">Empty</div></div>';grid.appendChild(card);return}
+    card.innerHTML='<span class="tag">'+it.tag+'</span><div class="cardhead"><div class="cardtitle">'+lab+' · '+it.title+'</div></div><div class="live"><iframe title="'+it.title+'"></iframe><div class="ph">Loading…</div></div>';
     grid.appendChild(card);
     var box=card.querySelector('.live'),f=box.querySelector('iframe'),ph=box.querySelector('.ph');
     box._f=f;f.addEventListener('load',function(){ph.style.display='none'});

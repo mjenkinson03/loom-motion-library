@@ -4,7 +4,7 @@ from holefix import wrap,R_HOLE
 FPS=60; LOOP=3.4; T_RIPPLE=2.5; STAGGER=0.05
 CX,CY=130.5,124
 BEZ={"hold":((0.33,0),(0.67,1)),"gentle":((0.33,0),(0.67,1)),"snapin":((0.75,0),(1,1)),"snapout":((0.1,0.9),(0.3,1)),"settle":((0.4,0),(0.6,1))}
-KEYS=[(0.00,100,100,"hold"),(1.30,100,100,"gentle"),(1.50,104,103,"snapin"),(1.68,46,96,"hold"),(1.76,46,96,"snapout"),(2.10,108,102,"settle"),(2.40,100,100,"hold"),(LOOP,100,100,"hold")]
+KEYS=[(0.00,100,100,"hold"),(1.30,100,100,"gentle"),(1.50,104,103,"snapin"),(1.68,40,96,"hold"),(1.76,40,96,"snapout"),(2.10,108,102,"settle"),(2.40,100,100,"hold"),(LOOP,100,100,"hold")]
 def kf(vals):
     k=[]
     for i,(t,v,e) in enumerate(vals):

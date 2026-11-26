@@ -19,7 +19,7 @@ def kf(vals):
     return {"a":1,"k":k}
 S=lambda v:{"a":0,"k":v}
 def beam(r): return [24,r-40],[0,-(40+r)/2]
-SHUT=[(0,100,"hold"),(1.3,100,"gentle"),(1.5,104,"snapin"),(1.68,46,"hold"),(1.76,46,"snapout"),(2.1,108,"settle"),(2.4,100,"hold")]
+SHUT=[(0,100,"hold"),(1.3,100,"gentle"),(1.5,104,"snapin"),(1.68,40,"hold"),(1.76,40,"snapout"),(2.1,108,"settle"),(2.4,100,"hold")]
 T_CLOSE,CLOSE_SPAN,CLOSE_DUR=2.5,0.4,0.28         # fan closes: first beam at 2.5s, the last starts 0.4s later, 280ms per beam
 smooth=lambda x:x*x*(3-2*x)                       # the start times follow a smoothstep curve: the sweep eases in and out
 FOLD=40                                            # each beam folds 40 degrees clockwise (onto its neighbour)

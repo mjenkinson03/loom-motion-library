@@ -32,7 +32,7 @@ def local(c,th):
 V=(-16,38); U2=(70,-76); n=math.hypot(*U2)
 ARMS={7:arm((-52,2),V),5:arm((V[0]-12*U2[0]/n,V[1]-12*U2[1]/n),(54,-38))}   # beams 7 / 5 = lower left / lower right of centre
 # shutter, played through: (time, outer radius, easing)
-SHUT=[(0,100,"hold"),(1.3,100,"gentle"),(1.5,104,"snapin"),(1.68,46,"hold"),(1.76,46,"snapout"),(2.1,108,"settle"),(2.4,100,"hold")]
+SHUT=[(0,100,"hold"),(1.3,100,"gentle"),(1.5,104,"snapin"),(1.68,40,"hold"),(1.76,40,"snapout"),(2.1,108,"settle"),(2.4,100,"hold")]
 def beam_keys(i):
     base=i*30; size=[];pos=[];rot=[]
     def add(t,sz,ps,r,e): size.append((t,sz,e)); pos.append((t,ps,e)); rot.append((t,[r],e))

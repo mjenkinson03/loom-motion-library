@@ -17,7 +17,7 @@ def kf(vals):
     return {"a":1,"k":k}
 S=lambda v:{"a":0,"k":v}
 def beam(r): return [24,r-40],[0,-(40+r)/2]
-SHUT=[(0,100,"hold"),(1.3,100,"gentle"),(1.5,104,"snapin"),(1.68,46,"hold"),(1.76,46,"snapout"),(2.1,108,"settle"),(2.4,100,"hold"),(LOOP,100,"hold")]
+SHUT=[(0,100,"hold"),(1.3,100,"gentle"),(1.5,104,"snapin"),(1.68,40,"hold"),(1.76,40,"snapout"),(2.1,108,"settle"),(2.4,100,"hold"),(LOOP,100,"hold")]
 T_NUDGE,T_DROP,T_END=2.4,2.5,2.78      # nudged up for 0.1s, then the drop: 0.28s, quick
 NUDGE=16                               # how far it is nudged up first
 DROP=230; SIDE=0                                 # how far it falls (units)
