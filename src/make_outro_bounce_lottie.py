@@ -57,7 +57,7 @@ opa=kf([(0,[100],"hold"),(T_LIFT1,[100],"in"),(T_GONE,[0],"hold"),(T_RISE,[0],"o
 tr=lambda rot:{"ty":"tr","p":S([0,0]),"a":S([0,0]),"s":S([100,100]),"r":rot,"o":S(100),"sk":S(0),"sa":S(0)}
 W=S([1,1,1,1])
 # Flex about the joint at the bottom of the check (degrees of droop, + = tips down): trailing as the check shoots up, then a damped wobble on each landing.
-SPRING=0.5                                   # 1.0 = the first noodle version; halved to make the check less springy
+SPRING=0.25                                  # 1.0 = the first noodle version; now a quarter of it (halved twice)
 WOBBLE=[(t,w*SPRING) for t,w in [(0,0),(T_RISE-0.01,0),(T_RISE+0.13,7),(T_APEX-0.0,-3),(T_APEX+0.1,0),(T_LAND-0.02,0),(T_LAND+0.05,10),(T_LAND+0.12,-5),(T_LAND+0.2,3.5),(T_LAND+0.28,-1.5),(T_LAND+0.38,0),(LOOP,0)]]
 legs=[]
 for i in range(12):
