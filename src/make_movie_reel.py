@@ -66,6 +66,28 @@ pulse["ks"]["o"]={"a":1,"k":keys}
 d["layers"].insert(1,pulse)
 clone_first["ks"]["o"]={"a":1,"k":[{"t":0,"s":[0],"h":1},{"t":62,"s":[100],**LIN},{"t":70,"s":[0],"h":1},{"t":168,"s":[0]}]}  # clone: slides out, fading fast
 root[812]["ks"]["o"]={"a":1,"k":[{"t":0,"s":[0],"h":1},{"t":94,"s":[0],**LIN},{"t":112,"s":[100],"h":1},{"t":168,"s":[100]}]}  # slide-in fades in
+# The export builds the centre hole from morphing low-poly paths, so its edge is slightly lumpy / pointy (28-29.5px radius, shifting
+# frame to frame). Every logo layer is therefore punched with one perfect circle (inverted alpha matte) that is just big enough to cover
+# the lumps. X = measured logo centre on the frames where it slides (everywhere else the logo is centred).
+HOLE_R=29.8
+SLIDE_X={62:351,63:353,64:356.25,65:361.5,66:369.75,67:382.75,68:405.25,69:435.25,94:164.5,95:170.5,96:178.75,97:191.75,98:214.25,99:244.25,
+ 100:268.5,101:285.5,102:297.75,103:307.5,104:315,105:321.25,106:326.25,107:330.75,108:334.25,109:337.25,110:340,111:342,112:344,
+ 113:345.5,114:346.75,115:347.75,116:348.5,117:349,118:350}
+def hole_matte(ind):
+    ks=[{"t":0,"s":[350,200,0],"h":1}]
+    for f,x in SLIDE_X.items():
+        ks.append({"t":f,"s":[x,200,0],**LIN})
+    ks[-1]={"t":118,"s":[350,200,0],"h":1}
+    return {"ddd":0,"ind":ind,"ty":4,"nm":"hole","td":1,"sr":1,"ks":{"o":{"a":0,"k":100},"r":{"a":0,"k":0},"p":{"a":1,"k":ks},"a":{"a":0,"k":[0,0,0]},"s":{"a":0,"k":[100,100,100]}},
+            "ao":0,"shapes":[{"ty":"gr","it":[{"ty":"el","d":1,"s":{"a":0,"k":[HOLE_R*2,HOLE_R*2]},"p":{"a":0,"k":[0,0]}},
+            {"ty":"fl","c":{"a":0,"k":[1,1,1,1]},"o":{"a":0,"k":100},"r":1},{"ty":"tr","p":{"a":0,"k":[0,0]},"a":{"a":0,"k":[0,0]},"s":{"a":0,"k":[100,100]},"r":{"a":0,"k":0},"o":{"a":0,"k":100}}]}],
+            "ip":0,"op":168,"st":0,"bm":0}
+new=[];n=2000
+for l in d["layers"]:
+    if l["ind"] in (1622,1623,812,1621):
+        n+=1; new.append(hole_matte(n)); l["tt"]=2
+    new.append(l)
+d["layers"]=new
 def r(o):
     if isinstance(o,float): return round(o,3)
     if isinstance(o,list): return [r(x) for x in o]
