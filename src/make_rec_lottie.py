@@ -39,9 +39,26 @@ def retime(o,delta,t0,fps):
             else: retime(v,delta,t0,fps)
     elif isinstance(o,list):
         for x in o: retime(x,delta,t0,fps)
+# Even it out: in this row the shutter lasts exactly 1.0s (it is 1.1s in the master) and the outro (nudge, drop, check, fade) exactly 1.0s (1.7s
+# in the master). The loop reset after the check (beams opening again, 1.05s) keeps its normal speed. Done by warping the master timeline piecewise.
+def warp_t(t):
+    if t<=1.3: return t
+    if t<=2.4: return 1.3+(t-1.3)*(1.0/1.1)          # shutter 1.1s -> 1.0s
+    if t<=4.1: return 2.3+(t-2.4)*(1.0/1.7)          # outro 1.7s -> 1.0s
+    return 3.3+(t-4.1)                                  # reset unchanged
+def warp(o,fps):
+    if isinstance(o,dict):
+        for k,v in list(o.items()):
+            if k=="k" and isinstance(v,list) and v and isinstance(v[0],dict) and "t" in v[0] and "s" in v[0]:
+                for x in v: x["t"]=round(warp_t(x["t"]/fps)*fps,3)
+            elif k=="op" and isinstance(v,(int,float)): o[k]=round(warp_t(v/fps)*fps,3)
+            else: warp(v,fps)
+    elif isinstance(o,list):
+        for x in o: warp(x,fps)
+warp(base,base["fr"])
 # The number in each card is how long the blue bar takes to load. The shutter plays at the END of the loading (it lasts 1.1s: 1.3s-2.4s in the master
 # timeline) and the bounce outro follows at its normal speed. Nothing is sped up: only the loading hold before the shutter is longer or shorter.
-SHUTTER_START,SHUTTER_LEN=1.3,1.1
+SHUTTER_START,SHUTTER_LEN=1.3,1.0
 for secs in (6,3,1):
     lot=copy.deepcopy(base)
     start=max(0.0,secs-SHUTTER_LEN)                                   # when the shutter begins in the new timeline
