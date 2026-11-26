@@ -36,7 +36,7 @@ h2{font-weight:400;font-size:clamp(32px,3.4vw,48px);line-height:1.05;letter-spac
 </style></head>
 <body>
 <header class="top"><div class="wrap"><a class="brand" href="#top">Motion Library</a>
-<nav><a href="#cinema">Cinema</a><a href="#d3">3D</a><a href="#geo">Geometric</a></nav><span></span></div></header>
+<nav><a href="#cinema">Cinema</a><a href="#d3">3D</a><a href="#geo">Geometric</a><a href="#atl">Atlassian</a></nav><span></span></div></header>
 <main id="top">
 <div class="herob"><canvas id="waves" aria-hidden="true"></canvas>
 <div class="wrap hero"><div class="eyebrow">Loom · Motion experiments</div>
@@ -58,7 +58,9 @@ var GROUPS=[
  {id:'geo',title:'Geometric',cols:3,items:[
   {tag:'Lottie',title:'Unfold',src:'items/unfold.html'},
   {tag:'Lottie',title:'Tunnel',src:'items/tunnel.html'},
-  {tag:'Lottie',title:'Assemble',src:'items/assemble.html'}]}
+  {tag:'Lottie',title:'Assemble',src:'items/assemble.html'}]},
+ {id:'atl',title:'Atlassian',cols:3,items:[
+  {tag:'Lottie',title:'Icon carousel',src:'items/carousel.html'}]}
 ];
 var VW=1280, boxes=[], n=0, root=document.getElementById('sections');
 function fit(b){b._f.style.transform='scale('+b.clientWidth/VW+')'}
