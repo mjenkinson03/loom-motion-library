@@ -28,9 +28,24 @@ def cut_start(o,T,fps):
             else: cut_start(v,T,fps)
     elif isinstance(o,list):
         for x in o: cut_start(x,T,fps)
-for secs in (6,3):                                    # 6s and 3s: the whole sequence stretched / squeezed in time
-    lot=copy.deepcopy(base); K=secs/MASTER; scale(lot,K); lot["nm"]=f"Recommendation {secs}s"
+def retime(o,delta,t0,fps):
+    """Shift every keyframe at or after t0 (seconds) by delta seconds (positive = a longer loading hold before the shutter)."""
+    if isinstance(o,dict):
+        for k,v in list(o.items()):
+            if k=="k" and isinstance(v,list) and v and isinstance(v[0],dict) and "t" in v[0] and "s" in v[0]:
+                for x in v:
+                    if x["t"]>=t0*fps-1e-6: x["t"]=round(x["t"]+delta*fps,3)
+            elif k=="op" and isinstance(v,(int,float)): o[k]=round(v+delta*fps,3)
+            else: retime(v,delta,t0,fps)
+    elif isinstance(o,list):
+        for x in o: retime(x,delta,t0,fps)
+# The number in each card is how long the blue bar takes to load. The shutter plays at the END of the loading (it lasts 1.1s: 1.3s-2.4s in the master
+# timeline) and the bounce outro follows at its normal speed. Nothing is sped up: only the loading hold before the shutter is longer or shorter.
+SHUTTER_START,SHUTTER_LEN=1.3,1.1
+for secs in (6,3,1):
+    lot=copy.deepcopy(base)
+    start=max(0.0,secs-SHUTTER_LEN)                                   # when the shutter begins in the new timeline
+    if start>=SHUTTER_START: retime(lot,start-SHUTTER_START,SHUTTER_START,base["fr"])
+    else: cut_start(lot,SHUTTER_START-start,base["fr"])               # loading shorter than the master hold: cut the hold (the 1s card starts on the shutter)
+    lot["nm"]=f"Recommendation {secs}s loading"
     real.emit(f"rec-{secs}",lot,f"recommendation-{secs}s")
-# 1s: loading is just the 1.1s shutter. Nothing is sped up; the bounce outro is tagged on after it at its normal speed (about 3.9s in all).
-lot=copy.deepcopy(base); cut_start(lot,1.3,base["fr"]); lot["nm"]="Recommendation 1s (shutter, then outro)"
-real.emit("rec-1",lot,"recommendation-1s")

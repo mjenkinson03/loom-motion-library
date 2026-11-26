@@ -4,7 +4,7 @@
 <body><div id="a"></div><div class="bar"><i></i></div>
 <script src="lottie_light.min.js"></script><script src="rec-1.gz.js"></script>
 <script>
-const BAR_FULL=1.1;
+const BAR_FULL=1;
 const setBar=s=>document.querySelector('.bar i').style.width=(Math.min(1,s/BAR_FULL)*100)+'%';
 const FIX=new URLSearchParams(location.search).get('t');
 new Response(new Blob([Uint8Array.from(atob(window.LOADER_GZ),c=>c.charCodeAt(0))]).stream().pipeThrough(new DecompressionStream('gzip'))).json()
