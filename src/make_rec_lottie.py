@@ -87,11 +87,11 @@ for secs in (6,3,1):
     real.emit(f"rec-{secs}",lot,f"recommendation-{secs}s")
 
 # ---- 15 seconds ("error"): the shutter cycles for the first 8s, then stops: the logo fades to a subtle gray and slowly pulses between light gray and white
-# until the 15s load finishes (ending on white), then the 1s check outro plays.
-GRAY=[0.62,0.62,0.65,1]; WHITE=[1,1,1,1]
+# until the 15s load finishes, then it warms back to white as the 1s check outro plays.
+DARK=[0.40,0.40,0.43,1]; LIGHT=[0.74,0.74,0.77,1]; WHITE=[1,1,1,1]       # the logo never goes back to white while it waits: dark gray <-> light gray
 def colour_keys(fps):
-    half=6/7                                               # 9s -> 15s is 7 half-pulses, so it ends on white
-    pts=[(0,WHITE),(8.0,WHITE),(9.0,GRAY)]+[(9.0+half*(k+1),WHITE if k%2==0 else GRAY) for k in range(7)]
+    half=6/7                                               # 9s -> 15s is 7 half-pulses, so it ends on the light gray
+    pts=[(0,WHITE),(8.0,WHITE),(9.0,DARK)]+[(9.0+half*(k+1),LIGHT if k%2==0 else DARK) for k in range(7)]+[(15.5,WHITE),(40,WHITE)]
     ks=[]
     for i,(t,c) in enumerate(pts):
         d={"t":round(t*fps,3),"s":c}
@@ -100,6 +100,7 @@ def colour_keys(fps):
     return {"a":1,"k":ks}
 def recolour(o,fps):
     if isinstance(o,dict):
+        if o.get("td"): return                              # leave the hole's matte layer alone (it only supplies a shape)
         if o.get("ty")=="fl": o["c"]=colour_keys(fps)
         for v in o.values(): recolour(v,fps)
     elif isinstance(o,list):
