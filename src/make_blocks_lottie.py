@@ -1,6 +1,6 @@
 # Stitchable building blocks for the recommendation sequences, written to lottie/blocks/. All use the same canvas (261 x 1500, logo centred at
 # 130.5, 750) and the same logo, so they can be placed one after another:
-#   shutter-cycle.json  1.0s   starts and ends on the full white logo: repeat it as many times as you like (hold the full logo for any rest)
+#   shutter-cycle.json  1.5s   the 1.0s shutter, then a 0.5s rest on the full white logo. Starts and ends on the full logo: just set it to loop
 #   gray.json           3.3s   white -> light gray -> dark gray -> light gray -> white, with markers: gray-in (0-0.8s), gray-pulse (0.8-2.8s, loop this one),
 #                              gray-out (2.8-3.3s)
 #   check-outro.json    0.95s  a white full logo fades in (0.15s) over whatever is on screen, then it nudges, drops and the check rises and settles.
@@ -61,7 +61,16 @@ def finish(lot,name,secs):
     os.makedirs("../lottie/blocks",exist_ok=True)
     emit(f"blk-{name}",lot,f"blocks/{name}")        # also writes the small copy the page's previews play
 # shutter: the first second of the master (starts and ends on the full logo)
-b=copy.deepcopy(cut); window(b,0,1.0); finish(b,"shutter-cycle",1.0)
+def extend(o,secs):
+    """Hold the last state for `secs` more seconds (a rest)."""
+    if isinstance(o,dict):
+        for k,v in list(o.items()):
+            if k=="k" and isinstance(v,list) and v and isinstance(v[0],dict) and "t" in v[0] and "s" in v[0]:
+                y=copy.deepcopy(v[-1]); y["t"]=round(v[-1]["t"]+secs*fps,3); y.pop("o",None); y.pop("i",None); v.append(y)
+            else: extend(v,secs)
+    elif isinstance(o,list):
+        for x in o: extend(x,secs)
+b=copy.deepcopy(cut); window(b,0,1.0); extend(b,0.5); finish(b,"shutter-cycle",1.5)
 # still logo for the gray block
 still=copy.deepcopy(cut); window(still,0,0.0); freeze(still)
 b=copy.deepcopy(still); colour(b,[(0,W),(0.8,L),(1.8,D),(2.8,L),(3.3,W)])

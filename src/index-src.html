@@ -52,8 +52,8 @@ var GROUPS=[
   {label:'C',tag:'Lottie',title:'1 second',src:'items/rec-1.html'},
   {label:'D',tag:'Lottie',title:'15 seconds',src:'items/rec-15.html'}],
   files:[
-   {h:'Stitchable blocks',note:'Same 261 x 1500 canvas, same logo, same centre point, so they drop one after another. Slow load: shutter cycle x N, then gray (play gray-in, loop gray-pulse, play gray-out), then check outro. Fast load: shutter cycle x N, then check outro.'},
-   {name:'shutter-cycle.json',src:'items/blk-shutter-cycle.html',href:'lottie/blocks/shutter-cycle.json',note:'1.0s. Starts and ends on the full white logo; repeat as many times as you need (hold the full logo for any rest between).'},
+   {h:'Stitchable blocks',note:'Same 261 x 1500 canvas, same logo, same centre point, so they drop one after another. Slow load: shutter cycle (looping), then gray (play gray-in, loop gray-pulse, play gray-out), then check outro. Fast load: shutter cycle (looping), then check outro.'},
+   {name:'shutter-cycle.json',src:'items/blk-shutter-cycle.html',href:'lottie/blocks/shutter-cycle.json',note:'1.5s. The 1.0s shutter followed by a 0.5s rest on the full white logo. Starts and ends on the full logo, so just set it to loop.'},
    {name:'gray.json',src:'items/blk-gray.html',href:'lottie/blocks/gray.json',note:'3.3s. White to light gray to dark gray and back, then to white. Markers: gray-in (0 to 0.8s), gray-pulse (0.8 to 2.8s, loop this marker), gray-out (2.8 to 3.3s).'},
    {name:'check-outro.json',src:'items/blk-check-outro.html',href:'lottie/blocks/check-outro.json',note:'0.95s. A white full logo fades in over whatever is on screen (0.15s), then it nudges, drops and the check rises and settles. Layer it over the loader when loading ends, then remove the loader; it works from any point.'}]},
 
