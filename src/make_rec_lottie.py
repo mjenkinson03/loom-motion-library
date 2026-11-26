@@ -86,20 +86,19 @@ for secs in (6,3,1):
     lot["nm"]=f"Recommendation {secs}s loading"
     real.emit(f"rec-{secs}",lot,f"recommendation-{secs}s")
 
-# ---- 15 seconds ("error"): the shutter cycles for the first 8s, then stops: the logo fades to a subtle gray and slowly pulses between light gray and white
+# ---- 15 seconds ("error"): the shutter cycles, then (from 7s) the logo dips white -> dark gray -> white every 2s
 # until the 15s load finishes; then the white logo of the check outro fades in over it (0.15s, like check-outro.json) and the 1s outro plays.
 DARK=[0.15,0.15,0.17,1]; LIGHT=[0.50,0.50,0.53,1]; WHITE=[1,1,1,1]       # the logo never goes back to white while it waits: dark gray <-> light gray
 T_FADE0,T_FADE1=7.5,8.3          # the fade starts the moment the last shutter has rested (no dead air) and lands on the dark gray by about 8s
-PULSE=2.0                                          # one full gray cycle (dark -> light -> dark) takes 2.0s, i.e. 1.0s each way
 def colour_keys(fps):
-    half=PULSE/2; n=int((15.0-T_FADE1)//half)             # whole half-swings that fit before 15s
-    pts=[(0,WHITE),(T_FADE0,WHITE),(T_FADE1,DARK)]+[(T_FADE1+half*(k+1),LIGHT if k%2==0 else DARK) for k in range(n)]+[(15.0,LIGHT),(15.15,WHITE),(40,WHITE)]
+    # from 7.0s (the last shutter has just finished) the logo dips white -> dark gray -> white every 2.0s; four cycles end on white exactly at 15.0s
+    pts=[(0,WHITE),(7.0,WHITE)]
+    for c in range(4): pts+=[(7.0+2*c+1.0,DARK),(7.0+2*c+2.0,WHITE)]
+    pts+=[(40,WHITE)]
     ks=[]
     for i,(t,c) in enumerate(pts):
         d={"t":round(t*fps,3),"s":c}
-        if i<len(pts)-1:
-            if i==1: d.update({"o":{"x":[0.2],"y":[0.6]},"i":{"x":[0.4],"y":[1]}})          # the fade itself: quick off the mark, no slow start
-            else: d.update({"o":{"x":[0.45],"y":[0]},"i":{"x":[0.55],"y":[1]}})
+        if i<len(pts)-1: d.update({"o":{"x":[0.45],"y":[0]},"i":{"x":[0.55],"y":[1]}})
         ks.append(d)
     return {"a":1,"k":ks}
 def recolour(o,fps):

@@ -46,15 +46,15 @@ h2{font-weight:400;font-size:clamp(32px,3.4vw,48px);line-height:1.05;letter-spac
 <script>
 /* ---- add new riffs here: put a page in items/ and add a line to a group, then run build.py ---- */
 var GROUPS=[
- {id:'rec',title:'Recommendation',numLabel:'★',sub:'Four loading times: 6, 3, 1 and 15 seconds (how long the blue bar takes). The 1-second shutter keeps cycling, with a half-second pause between, to fill the loading time; then the 1-second bounce outro plays. The 15 second one is the slow-load case: after 8 seconds the shutter stops and the logo fades to gray and pulses until it finishes.',cols:3,items:[
+ {id:'rec',title:'Recommendation',numLabel:'★',sub:'Four loading times: 6, 3, 1 and 15 seconds (how long the blue bar takes). The 1-second shutter keeps cycling, with a half-second pause between, to fill the loading time; then the 1-second bounce outro plays. The 15 second one is the slow-load case: the shutter plays until 7 seconds, then the logo dips white to dark gray and back every 2 seconds until it finishes.',cols:3,items:[
   {label:'A',tag:'Lottie',title:'6 seconds',src:'items/rec-6.html'},
   {label:'B',tag:'Lottie',title:'3 seconds',src:'items/rec-3.html'},
   {label:'C',tag:'Lottie',title:'1 second',src:'items/rec-1.html'},
   {label:'D',tag:'Lottie',title:'15 seconds',src:'items/rec-15.html'}],
   files:[
-   {h:'Stitchable blocks',note:'Same 261 x 1500 canvas, same logo, same centre point, so they drop one after another. Slow load: shutter cycle (looping), then gray (play gray-in, then loop gray-pulse), then check outro. Fast load: shutter cycle (looping), then check outro.'},
+   {h:'Stitchable blocks',note:'Same 261 x 1500 canvas, same logo, same centre point, so they drop one after another. Slow load: shutter cycle (looping), then gray (looping), then check outro. Fast load: shutter cycle (looping), then check outro.'},
    {name:'shutter-cycle.json',src:'items/blk-shutter-cycle.html',href:'lottie/blocks/shutter-cycle.json',note:'1.5s. The 1.0s shutter followed by a 0.5s rest on the full white logo. Starts and ends on the full logo, so just set it to loop.'},
-   {name:'gray.json',src:'items/blk-gray.html',href:'lottie/blocks/gray.json',note:'2.8s. The gray fade: white to dark gray (marker gray-in, 0 to 0.8s), then dark to light and back to dark gray (marker gray-pulse, 0.8 to 2.8s; loop this one). It never returns to white; the check outro fades its own white logo in over it.'},
+   {name:'gray.json',src:'items/blk-gray.html',href:'lottie/blocks/gray.json',note:'2.0s. One gray cycle: white to dark gray (1.0s) and back to white (1.0s). Starts and ends on the full white logo, so just set it to loop.'},
    {name:'check-outro.json',src:'items/blk-check-outro.html',href:'lottie/blocks/check-outro.json',note:'0.95s. A white full logo fades in over whatever is on screen (0.15s), then it nudges, drops and the check rises and settles. Layer it over the loader when loading ends, then remove the loader; it works from any point.'}]},
 
 
