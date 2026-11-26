@@ -88,14 +88,17 @@ for secs in (6,3,1):
 
 # ---- 15 seconds ("error"): the shutter cycles for the first 8s, then stops: the logo fades to a subtle gray and slowly pulses between light gray and white
 # until the 15s load finishes, then it warms back to white as the 1s check outro plays.
-DARK=[0.24,0.24,0.26,1]; LIGHT=[0.50,0.50,0.53,1]; WHITE=[1,1,1,1]       # the logo never goes back to white while it waits: dark gray <-> light gray
+DARK=[0.15,0.15,0.17,1]; LIGHT=[0.50,0.50,0.53,1]; WHITE=[1,1,1,1]       # the logo never goes back to white while it waits: dark gray <-> light gray
+T_FADE0,T_FADE1=7.5,8.3          # the fade starts the moment the last shutter has rested (no dead air) and lands on the dark gray by about 8s
 def colour_keys(fps):
-    half=6/5                                               # 9s -> 15s is 5 half-pulses of 1.2s each (slower), so it ends on the light gray
-    pts=[(0,WHITE),(8.0,WHITE),(9.0,DARK)]+[(9.0+half*(k+1),LIGHT if k%2==0 else DARK) for k in range(5)]+[(15.5,WHITE),(40,WHITE)]
+    half=(15.0-T_FADE1)/5                                  # five half-pulses of ~1.3s from the dark gray to 15s, so it ends on the light gray
+    pts=[(0,WHITE),(T_FADE0,WHITE),(T_FADE1,DARK)]+[(T_FADE1+half*(k+1),LIGHT if k%2==0 else DARK) for k in range(5)]+[(15.5,WHITE),(40,WHITE)]
     ks=[]
     for i,(t,c) in enumerate(pts):
         d={"t":round(t*fps,3),"s":c}
-        if i<len(pts)-1: d.update({"o":{"x":[0.45],"y":[0]},"i":{"x":[0.55],"y":[1]}})
+        if i<len(pts)-1:
+            if i==1: d.update({"o":{"x":[0.2],"y":[0.6]},"i":{"x":[0.4],"y":[1]}})          # the fade itself: quick off the mark, no slow start
+            else: d.update({"o":{"x":[0.45],"y":[0]},"i":{"x":[0.55],"y":[1]}})
         ks.append(d)
     return {"a":1,"k":ks}
 def recolour(o,fps):
