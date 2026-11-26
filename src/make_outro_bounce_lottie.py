@@ -4,6 +4,7 @@
 # (v2: the logo now drops right off the bottom of the screen first; while it is out of sight it becomes the check, which bounces back up into place.)
 import math
 from emit import emit
+from holefix import wrap,R_HOLE
 FPS=60; LOOP=6.6
 CX,CY=130.5,750        # tall comp (1500) so the logo can fall completely out of sight before the check rises
 BEZ={"hold":((0.33,0),(0.67,1)),"gentle":((0.33,0),(0.67,1)),"snapin":((0.75,0),(1,1)),"snapout":((0.1,0.9),(0.3,1)),"settle":((0.4,0),(0.6,1)),
@@ -61,4 +62,5 @@ for i in range(12):
     legs.append({"ty":"gr","nm":f"Beam {i+1}","it":[{"ty":"rc","d":1,"s":size,"p":ps,"r":S(0)},{"ty":"fl","c":W,"o":S(100),"r":1},tr(rot)]})
 logo={"ddd":0,"ind":1,"ty":4,"nm":"Beams","sr":1,"ks":{"o":opa,"r":S(0),"p":pos,"a":S([0,0,0]),"s":scl},"ao":0,"shapes":legs,"ip":0,"op":round(LOOP*FPS),"st":0,"bm":0}
 lot={"v":"5.7.4","fr":FPS,"ip":0,"op":round(LOOP*FPS),"w":261,"h":1500,"nm":"Outro: bounce check","ddd":0,"assets":[],"meta":{"g":"hand-built generator"},"layers":[logo]}
+lot=wrap(lot,[(0,R_HOLE),(T_LIFT1,R_HOLE),(T_GONE,0),(T_FADE,0),(T_FADE+0.01,R_HOLE),(LOOP,R_HOLE)])
 emit("outro-bounce",lot,"outro-bounce")

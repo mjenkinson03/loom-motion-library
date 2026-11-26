@@ -3,6 +3,7 @@
 # shrink away; it lands upright as the check (with a small squash), holds, dissolves, then the beams spring back open.
 import math
 from emit import emit
+from holefix import wrap,R_HOLE
 FPS=60; LOOP=5.7
 CX,CY=350,124          # wide comp (700) so the cartwheel has room
 BEZ={"hold":((0.33,0),(0.67,1)),"gentle":((0.33,0),(0.67,1)),"snapin":((0.75,0),(1,1)),"snapout":((0.1,0.9),(0.3,1)),"settle":((0.4,0),(0.6,1)),
@@ -64,4 +65,5 @@ for i in range(12):
     legs.append({"ty":"gr","nm":f"Beam {i+1}","it":[{"ty":"rc","d":1,"s":size,"p":ps,"r":S(0)},{"ty":"fl","c":W,"o":S(100),"r":1},tr(rot)]})
 logo={"ddd":0,"ind":1,"ty":4,"nm":"Beams","sr":1,"ks":{"o":opa,"r":lrot,"p":pos,"a":S([0,0,0]),"s":scl},"ao":0,"shapes":legs,"ip":0,"op":round(LOOP*FPS),"st":0,"bm":0}
 lot={"v":"5.7.4","fr":FPS,"ip":0,"op":round(LOOP*FPS),"w":700,"h":248,"nm":"Outro: cartwheel check","ddd":0,"assets":[],"meta":{"g":"hand-built generator"},"layers":[logo]}
+lot=wrap(lot,[(0,R_HOLE),(T_M0,R_HOLE),(T_M0+0.08,0),(T_FADE,0),(T_FADE+0.01,R_HOLE),(LOOP,R_HOLE)])
 emit("outro-cartwheel",lot,"outro-cartwheel")

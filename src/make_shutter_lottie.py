@@ -1,5 +1,6 @@
 # Shutter: the logo's 12 legs wind up, snap shut like a shutter, then spring back open. Long hold at full, with a clockwise ripple round the legs.
 from emit import emit
+from holefix import wrap,R_HOLE
 FPS=60; LOOP=3.4; T_RIPPLE=2.5; STAGGER=0.05
 CX,CY=130.5,124
 BEZ={"hold":((0.33,0),(0.67,1)),"gentle":((0.33,0),(0.67,1)),"snapin":((0.75,0),(1,1)),"snapout":((0.1,0.9),(0.3,1)),"settle":((0.4,0),(0.6,1))}
@@ -25,4 +26,5 @@ shapes=[{"ty":"gr","nm":f"Leg {i+1}","it":[{"ty":"rc","d":1,"s":size,"p":pos,"r"
 # (no centre ring: just the beams)
 lot={"v":"5.7.4","fr":FPS,"ip":0,"op":round(LOOP*FPS),"w":261,"h":248,"nm":"Shutter","ddd":0,"assets":[],"meta":{"g":"hand-built generator"},
  "layers":[{"ddd":0,"ind":1,"ty":4,"nm":"Logo","sr":1,"ks":{"o":{"a":0,"k":100},"r":{"a":0,"k":0},"p":{"a":0,"k":[CX,CY,0]},"a":{"a":0,"k":[0,0,0]},"s":scl},"ao":0,"shapes":shapes,"ip":0,"op":round(LOOP*FPS),"st":0,"bm":0}]}
+lot=wrap(lot,[(0,R_HOLE),(LOOP,R_HOLE)])
 emit("shutter",lot,"shutter")
