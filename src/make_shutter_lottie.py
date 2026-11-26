@@ -22,7 +22,7 @@ def dip(i):
 tr=lambda rot=0,o=None:{"ty":"tr","p":{"a":0,"k":[0,0]},"a":{"a":0,"k":[0,0]},"s":{"a":0,"k":[100,100]},"r":{"a":0,"k":rot},"o":o or {"a":0,"k":100},"sk":{"a":0,"k":0},"sa":{"a":0,"k":0}}
 W={"a":0,"k":[1,1,1,1]}
 shapes=[{"ty":"gr","nm":f"Leg {i+1}","it":[{"ty":"rc","d":1,"s":size,"p":pos,"r":{"a":0,"k":0}},{"ty":"fl","c":W,"o":{"a":0,"k":100},"r":1},tr(i*30,dip(i))]} for i in range(12)]
-shapes.append({"ty":"gr","nm":"Ring","it":[{"ty":"el","d":1,"s":{"a":0,"k":[78,78]},"p":{"a":0,"k":[0,0]}},{"ty":"st","c":W,"o":{"a":0,"k":100},"w":{"a":0,"k":10},"lc":1,"lj":1},tr()]})
+# (no centre ring: just the beams)
 lot={"v":"5.7.4","fr":FPS,"ip":0,"op":round(LOOP*FPS),"w":261,"h":248,"nm":"Shutter","ddd":0,"assets":[],"meta":{"g":"hand-built generator"},
  "layers":[{"ddd":0,"ind":1,"ty":4,"nm":"Logo","sr":1,"ks":{"o":{"a":0,"k":100},"r":{"a":0,"k":0},"p":{"a":0,"k":[CX,CY,0]},"a":{"a":0,"k":[0,0,0]},"s":scl},"ao":0,"shapes":shapes,"ip":0,"op":round(LOOP*FPS),"st":0,"bm":0}]}
 emit("shutter",lot,"shutter")
