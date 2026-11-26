@@ -8,7 +8,7 @@ from holefix import wrap,R_HOLE
 FPS=60; LOOP=5.15
 CX,CY=130.5,750        # tall comp (1500) so the logo can fall completely out of sight before the check rises
 BEZ={"hold":((0.33,0),(0.67,1)),"gentle":((0.33,0),(0.67,1)),"snapin":((0.75,0),(1,1)),"snapout":((0.1,0.9),(0.3,1)),"settle":((0.4,0),(0.6,1)),
-     "click":((0.34,1.56),(0.64,1)),"io":((0.45,0),(0.55,1)),"out":((0.22,1),(0.36,1)),"in":((0.55,0),(1,0.45))}
+     "click":((0.34,1.56),(0.64,1)),"snap":((0.1,0.9),(0.2,1)),"io":((0.45,0),(0.55,1)),"out":((0.22,1),(0.36,1)),"in":((0.55,0),(1,0.45))}
 def kf(vals):
     k=[]
     for i,(t,v,e) in enumerate(vals):
@@ -58,14 +58,16 @@ tr=lambda rot:{"ty":"tr","p":S([0,0]),"a":S([0,0]),"s":S([100,100]),"r":rot,"o":
 W=S([1,1,1,1])
 # Flex about the joint at the bottom of the check (degrees of droop, + = tips down): trailing as the check shoots up, then a single droop and recover on landing.
 SPRING=0.25                                  # 1.0 = the first noodle version; now a quarter of it (halved twice)
-WOBBLE=[(t,w*SPRING) for t,w in [(0,0),(T_RISE-0.01,0),(T_RISE+0.13,7),(T_APEX+0.1,0),(T_LAND-0.02,0),(T_LAND+0.1,10),(T_LAND+0.38,0),(LOOP,0)]]   # one trail on the way up and ONE droop-and-recover on landing (no repeat swings)
+LAND_SPRING=0.45                              # the landing jiggle is punchier than the trail on the way up
+WOBBLE=[(0,0,"io"),(T_RISE-0.01,0,"io"),(T_RISE+0.13,7*SPRING,"io"),(T_APEX+0.1,0,"io"),
+        (T_LAND-0.02,0,"snap"),(T_LAND+0.03,10*LAND_SPRING,"out"),(T_LAND+0.26,0,"io"),(LOOP,0,"io")]   # ONE quick droop on impact (peak in 50ms) that eases back out
 legs=[]
 for i in range(12):
     size,ps,rot=beam_keys(i)
     beam_g={"ty":"gr","nm":f"Beam {i+1}","it":[{"ty":"rc","d":1,"s":size,"p":ps,"r":S(0)},{"ty":"fl","c":W,"o":S(100),"r":1},tr(rot)]}
     if i in ARMS:                                     # the check's two arms flex about the joint: a noodle, not a brick
         sign=-1 if i==7 else 1                        # short arm droops one way, long arm the other (tips trail / droop together)
-        wob=kf([(t,[sign*w],"io") for t,w in WOBBLE])
+        wob=kf([(t,[sign*w],e) for t,w,e in WOBBLE])
         beam_g={"ty":"gr","nm":f"Arm {i+1}","it":[beam_g,{"ty":"tr","p":S(list(V)),"a":S(list(V)),"s":S([100,100]),"r":wob,"o":S(100),"sk":S(0),"sa":S(0)}]}
     legs.append(beam_g)
 logo={"ddd":0,"ind":1,"ty":4,"nm":"Beams","sr":1,"ks":{"o":opa,"r":S(0),"p":pos,"a":S([0,0,0]),"s":scl},"ao":0,"shapes":legs,"ip":0,"op":round(LOOP*FPS),"st":0,"bm":0}
