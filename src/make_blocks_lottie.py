@@ -4,6 +4,7 @@
 #   gray-in.json         0.8s  full logo, white -> light gray
 #   gray-pulse.json      2.0s  light gray -> dark gray -> light gray   -> repeat as many times as you like
 #   gray-out.json        0.5s  full logo, light gray -> white
+#   gray.json            3.3s  the three gray blocks in ONE file, with named markers: gray-in (0-0.8s), gray-pulse (0.8-2.8s, loop this one), gray-out (2.8-3.3s)
 #   check-outro.json     0.8s  starts on the full white logo, ends on the settled check (it holds there; it does not fade and does not reset)
 # Order for a slow load:  shutter-cycle x N  ->  gray-in  ->  gray-pulse x N  ->  gray-out  ->  check-outro.   (Fast loads: shutter-cycle x N -> check-outro.)
 import copy,json,os
@@ -68,3 +69,8 @@ b=copy.deepcopy(cut); window(b,1.0,1.8); finish(b,"check-outro",0.8)
 still=copy.deepcopy(cut); window(still,0,0.0); freeze(still)
 for name,secs,keys in [("gray-in",0.8,[(0,W),(0.8,L)]),("gray-pulse",2.0,[(0,L),(1.0,D),(2.0,L)]),("gray-out",0.5,[(0,L),(0.5,W)])]:
     b=copy.deepcopy(still); colour(b,keys); finish(b,name,secs)
+
+# the three gray blocks in one file, with markers so a player can play gray-in once, loop gray-pulse, then play gray-out
+b=copy.deepcopy(still); colour(b,[(0,W),(0.8,L),(1.8,D),(2.8,L),(3.3,W)])
+b["markers"]=[{"tm":round(t*fps,3),"cm":n,"dr":round(d*fps,3)} for n,t,d in [("gray-in",0,0.8),("gray-pulse",0.8,2.0),("gray-out",2.8,0.5)]]
+finish(b,"gray",3.3)
