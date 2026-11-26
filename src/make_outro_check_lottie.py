@@ -55,7 +55,7 @@ def beam_keys(i):
     return kf(size),kf(pos),kf(rot)
 H=14                                           # the hop: up a touch, then back down, as if hit
 scl=kf([(0,[100,100,100],"hold"),(2.0,[100,100,100],"gentle"),(T_WIND,[103,103,100],"snapin"),(T_WIND+0.2,[98,98,100],"out"),(T_ARR,[100,100,100],"hold"),
-        (T_ARR+0.09,[96,106,100],"in"),(T_ARR+0.2,[106,94,100],"io"),(T_ARR+0.3,[100,100,100],"hold"),
+        (T_ARR+0.09,[100,100,100],"in"),(T_ARR+0.2,[100,100,100],"io"),(T_ARR+0.3,[100,100,100],"hold"),
         (T_OUT,[100,100,100],"io"),(T_FADE,[104,104,100],"H"),(T_OPEN,[96,96,100],"snapout"),(T_SET,[102,102,100],"settle"),(T_REST,[100,100,100],"hold"),(LOOP,[100,100,100],"hold")])
 pos=kf([(0,[CX,CY,0],"hold"),(T_ARR,[CX,CY,0],"out"),(T_ARR+0.09,[CX,CY-H,0],"in"),(T_ARR+0.2,[CX,CY,0],"hold"),(LOOP,[CX,CY,0],"hold")])
 opa=kf([(0,[100],"hold"),(T_OUT,[100],"io"),(T_FADE,[0],"H"),(T_OPEN,[100],"H"),(LOOP,[100],"hold")])

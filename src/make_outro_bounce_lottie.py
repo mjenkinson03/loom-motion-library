@@ -51,7 +51,7 @@ def beam_keys(i):
 Y=lambda y:[CX,CY+y,0]
 pos=kf([(0,Y(0),"hold"),(T_LIFT0,Y(0),"out"),(T_LIFT1,Y(-26),"in"),(T_GONE,Y(OFF),"H"),(T_RISE,Y(OFF),"out"),(T_APEX,Y(-14),"in"),(T_LAND,Y(0),"out"),(T_UP2,Y(-4),"in"),(T_DONE,Y(0),"hold"),(LOOP,Y(0),"hold")])
 scl=kf([(0,[100,100,100],"hold"),(1.3,[100,100,100],"gentle"),(1.5,[103,103,100],"snapin"),(1.68,[96,96,100],"hold"),(1.76,[96,96,100],"snapout"),(2.1,[102,102,100],"settle"),(2.4,[100,100,100],"hold"),
-        (T_LIFT1,[98,104,100],"in"),(T_GONE,[92,114,100],"H"),(T_RISE,[92,112,100],"out"),(T_APEX,[100,100,100],"hold"),(T_LAND-0.02,[100,100,100],"out"),(T_LAND+0.04,[106,94,100],"io"),(T_UP2,[100,100,100],"hold"),
+        (T_LIFT1,[100,100,100],"in"),(T_GONE,[100,100,100],"H"),(T_RISE,[100,100,100],"out"),(T_APEX,[100,100,100],"hold"),(T_LAND-0.02,[100,100,100],"out"),(T_LAND+0.04,[100,100,100],"io"),(T_UP2,[100,100,100],"hold"),
         (T_OUT,[100,100,100],"io"),(T_FADE,[104,104,100],"H"),(T_OPEN,[96,96,100],"snapout"),(T_SET,[102,102,100],"settle"),(T_REST,[100,100,100],"hold"),(LOOP,[100,100,100],"hold")])
 opa=kf([(0,[100],"hold"),(T_LIFT1,[100],"in"),(T_GONE,[0],"hold"),(T_RISE,[0],"out"),(T_RISE+0.2,[100],"hold"),(T_OUT,[100],"io"),(T_FADE,[0],"H"),(T_OPEN,[100],"H"),(LOOP,[100],"hold")])
 tr=lambda rot:{"ty":"tr","p":S([0,0]),"a":S([0,0]),"s":S([100,100]),"r":rot,"o":S(100),"sk":S(0),"sa":S(0)}
