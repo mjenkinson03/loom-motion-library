@@ -5,7 +5,7 @@
 import math
 from emit import emit
 from holefix import wrap,R_HOLE
-FPS=60; LOOP=6.6
+FPS=60; LOOP=5.15
 CX,CY=130.5,750        # tall comp (1500) so the logo can fall completely out of sight before the check rises
 BEZ={"hold":((0.33,0),(0.67,1)),"gentle":((0.33,0),(0.67,1)),"snapin":((0.75,0),(1,1)),"snapout":((0.1,0.9),(0.3,1)),"settle":((0.4,0),(0.6,1)),
      "click":((0.34,1.56),(0.64,1)),"io":((0.45,0),(0.55,1)),"out":((0.22,1),(0.36,1)),"in":((0.55,0),(1,0.45))}
@@ -21,7 +21,7 @@ def kf(vals):
 S=lambda v:{"a":0,"k":v}
 # timeline (seconds)
 T_LIFT0,T_LIFT1,T_GONE,T_RISE,T_APEX,T_LAND,T_UP2,T_DONE=2.4,2.7,2.9,2.92,3.2,3.38,3.48,3.58
-T_OUT,T_FADE,T_OPEN,T_SET,T_REST=4.9,5.4,5.7,6.15,6.4
+T_OUT,T_FADE,T_OPEN,T_SET,T_REST=3.75,4.1,4.25,4.7,4.95
 OFF=140            # the floor: the logo's bottom lands just above the blue loading bar (fading to 0% on the way down, back to 100% on the way up)
 def beam(r): return [24,r-40],[0,-(40+r)/2]
 def arm(p0,p1):

@@ -5,7 +5,7 @@
 import math
 from emit import emit
 from holefix import wrap,R_HOLE
-FPS=60; LOOP=5.2
+FPS=60; LOOP=4.65
 CX,CY=130.5,124
 BEZ={"hold":((0.33,0),(0.67,1)),"gentle":((0.33,0),(0.67,1)),"snapin":((0.75,0),(1,1)),"snapout":((0.1,0.9),(0.3,1)),"settle":((0.4,0),(0.6,1)),
      "click":((0.34,1.56),(0.64,1)),"out":((0.2,0.9),(0.3,1)),"in":((0.55,0),(1,0.45)),"io":((0.45,0),(0.55,1))}
@@ -21,7 +21,7 @@ def kf(vals):
 S=lambda v:{"a":0,"k":v}
 T_WIND,T_GATHER,T_ARR=2.1,0.30,2.46          # wind-up starts, how long each beam takes to gather, when the check has formed
 STAG=0.012                                    # clockwise stagger between beams
-T_OUT,T_FADE,T_OPEN,T_SET,T_REST=3.6,4.0,4.2,4.6,4.85
+T_OUT,T_FADE,T_OPEN,T_SET,T_REST=3.2,3.5,3.65,4.05,4.3
 def beam(r): return [24,r-40],[0,-(40+r)/2]
 def arm(p0,p1):
     L=math.dist(p0,p1); c=((p0[0]+p1[0])/2,(p0[1]+p1[1])/2); u=((p1[0]-p0[0])/L,(p1[1]-p0[1])/L)

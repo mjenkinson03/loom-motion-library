@@ -4,7 +4,7 @@
 import math
 from emit import emit
 from holefix import wrap,R_HOLE
-FPS=60; LOOP=5.4
+FPS=60; LOOP=4.8
 CX,CY=350,124          # wide comp (700) so the cartwheel has room
 BEZ={"hold":((0.33,0),(0.67,1)),"gentle":((0.33,0),(0.67,1)),"snapin":((0.75,0),(1,1)),"snapout":((0.1,0.9),(0.3,1)),"settle":((0.4,0),(0.6,1)),
      "click":((0.34,1.56),(0.64,1)),"io":((0.45,0),(0.55,1)),"out":((0.22,1),(0.36,1)),"in":((0.55,0),(1,0.45)),"lin":((0,0),(1,1))}
@@ -21,7 +21,7 @@ S=lambda v:{"a":0,"k":v}
 # timeline (seconds)
 T_SPIN0,T_SPIN1,T_HOP,T_LAND,T_DONE=2.4,2.6,2.72,2.85,2.93
 T_M0,T_M1=2.6,2.78
-T_OUT,T_FADE,T_OPEN,T_SET,T_REST=4.0,4.4,4.6,5.05,5.3
+T_OUT,T_FADE,T_OPEN,T_SET,T_REST=3.5,3.85,4.0,4.45,4.7
 RUN=-110           # how far left the logo drifts during the spin (the run-up)
 def beam(r): return [24,r-40],[0,-(40+r)/2]
 def arm(p0,p1):
