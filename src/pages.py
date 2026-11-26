@@ -42,7 +42,7 @@ PAGES={
  "unfold":page("unfold","Unfold","std"),
  "tunnel":page("tunnel","Tunnel","full"),
  "assemble":page("assemble","Assemble","full"),
- "carousel":page("carousel","Icon carousel","reel"),
+ "carousel":page("carousel","Icon carousel","std"),
 }
 if __name__=="__main__":
     for k,v in PAGES.items(): open(f"items/{k}.html","w").write(v)
