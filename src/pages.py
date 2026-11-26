@@ -54,6 +54,7 @@ PAGES={
  "unfold":page("unfold","Unfold","std"),
  "tunnel":page("tunnel","Tunnel","full"),
  "assemble":page("assemble","Assemble","full"),
+ "outro-bounce":outro("outro-bounce","Bounce check",2.4),
  "outro-check":outro("outro-check","Shutter + check",2.42),
  "carousel":page("carousel","Icon carousel","full").replace("</style>","#a{transform:translateY(-9%)}.bar{top:64.5%}</style>"),   # small tile: tile + bar centred as a pair
 }
