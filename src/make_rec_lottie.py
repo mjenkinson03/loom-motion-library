@@ -88,10 +88,10 @@ for secs in (6,3,1):
 
 # ---- 15 seconds ("error"): the shutter cycles for the first 8s, then stops: the logo fades to a subtle gray and slowly pulses between light gray and white
 # until the 15s load finishes, then it warms back to white as the 1s check outro plays.
-DARK=[0.40,0.40,0.43,1]; LIGHT=[0.74,0.74,0.77,1]; WHITE=[1,1,1,1]       # the logo never goes back to white while it waits: dark gray <-> light gray
+DARK=[0.24,0.24,0.26,1]; LIGHT=[0.50,0.50,0.53,1]; WHITE=[1,1,1,1]       # the logo never goes back to white while it waits: dark gray <-> light gray
 def colour_keys(fps):
-    half=6/7                                               # 9s -> 15s is 7 half-pulses, so it ends on the light gray
-    pts=[(0,WHITE),(8.0,WHITE),(9.0,DARK)]+[(9.0+half*(k+1),LIGHT if k%2==0 else DARK) for k in range(7)]+[(15.5,WHITE),(40,WHITE)]
+    half=6/5                                               # 9s -> 15s is 5 half-pulses of 1.2s each (slower), so it ends on the light gray
+    pts=[(0,WHITE),(8.0,WHITE),(9.0,DARK)]+[(9.0+half*(k+1),LIGHT if k%2==0 else DARK) for k in range(5)]+[(15.5,WHITE),(40,WHITE)]
     ks=[]
     for i,(t,c) in enumerate(pts):
         d={"t":round(t*fps,3),"s":c}
