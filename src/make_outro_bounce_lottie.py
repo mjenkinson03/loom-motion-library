@@ -56,9 +56,9 @@ scl=kf([(0,[100,100,100],"hold"),(1.3,[100,100,100],"gentle"),(1.5,[103,103,100]
 opa=kf([(0,[100],"hold"),(T_LIFT1,[100],"in"),(T_GONE,[0],"hold"),(T_RISE,[0],"out"),(T_RISE+0.2,[100],"hold"),(T_OUT,[100],"io"),(T_FADE,[0],"H"),(T_OPEN,[100],"H"),(LOOP,[100],"hold")])
 tr=lambda rot:{"ty":"tr","p":S([0,0]),"a":S([0,0]),"s":S([100,100]),"r":rot,"o":S(100),"sk":S(0),"sa":S(0)}
 W=S([1,1,1,1])
-# Flex about the joint at the bottom of the check (degrees of droop, + = tips down): trailing as the check shoots up, then a damped wobble on each landing.
+# Flex about the joint at the bottom of the check (degrees of droop, + = tips down): trailing as the check shoots up, then a single droop and recover on landing.
 SPRING=0.25                                  # 1.0 = the first noodle version; now a quarter of it (halved twice)
-WOBBLE=[(t,w*SPRING) for t,w in [(0,0),(T_RISE-0.01,0),(T_RISE+0.13,7),(T_APEX-0.0,-3),(T_APEX+0.1,0),(T_LAND-0.02,0),(T_LAND+0.05,10),(T_LAND+0.12,-5),(T_LAND+0.2,3.5),(T_LAND+0.28,-1.5),(T_LAND+0.38,0),(LOOP,0)]]
+WOBBLE=[(t,w*SPRING) for t,w in [(0,0),(T_RISE-0.01,0),(T_RISE+0.13,7),(T_APEX+0.1,0),(T_LAND-0.02,0),(T_LAND+0.1,10),(T_LAND+0.38,0),(LOOP,0)]]   # one trail on the way up and ONE droop-and-recover on landing (no repeat swings)
 legs=[]
 for i in range(12):
     size,ps,rot=beam_keys(i)
