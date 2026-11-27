@@ -57,35 +57,16 @@ def warp(o,fps):
         for x in o: warp(x,fps)
 warp(base,base["fr"])
 
-# ---- the rest ripple: during each rest on the full logo the beams dip to 75% opacity one after another, clockwise from the top (the "little gray touch" from the Shutter card)
-RIP_DIP,RIP_STAG,RIP_DOWN,RIP_UP=75,0.02,0.07,0.12
-def ripple(lot,rests,fps):
-    """rests = start times (seconds) of rests on the full logo; each rest gets one ripple.
-    The dip is the beam's own fill opacity (lottie-web does not apply an animated opacity on a group transform that also animates rotation)."""
-    done=[0]
-    def dip(g):
-        k=int(g["nm"].split()[1])-1
-        keys=[(0,100)]
-        for t0 in rests:
-            s0=t0+k*RIP_STAG
-            keys+=[(s0,100),(s0+RIP_DOWN,RIP_DIP),(s0+RIP_DOWN+RIP_UP,100)]
-        keys.append((lot["op"]/fps,100))
-        ks=[]
-        for i,(t,v) in enumerate(keys):
-            d={"t":round(t*fps,3),"s":[v]}
-            if i<len(keys)-1: d.update({"o":{"x":[0.45],"y":[0]},"i":{"x":[0.55],"y":[1]}})
-            ks.append(d)
-        fl=[x for x in g["it"] if x.get("ty")=="fl"][0]
-        fl["o"]={"a":1,"k":ks}; done[0]+=1
-    def go(o):
-        if isinstance(o,dict):
-            if o.get("ty")=="gr" and str(o.get("nm","")).startswith("Beam "): dip(o)
-            else:
-                for v in o.values(): go(v)
-        elif isinstance(o,list):
-            for x in o: go(x)
-    go(lot); assert done[0]==12,done[0]
 
+import shutterkit
+def compose(lot,secs,pauses,fill_keys=None):
+    """The loading phase (0 .. secs) is the simple-structure shutter from shutterkit (loops reliably and shows the rest ripple); the master-based layer
+    (bounce outro, which needs the per-beam rotation) only appears from `secs` on, where it starts on the same full logo."""
+    S=shutterkit.build(pauses,total=secs,ripple=True,fill_keys=fill_keys,aid="s_hole_logo")
+    s_layer=S["layers"][0]; s_layer["ind"]=2; s_layer["op"]=round(secs*base["fr"])
+    lot["assets"]=lot.get("assets",[])+S["assets"]
+    lot["layers"][0]["ip"]=round(secs*base["fr"])
+    lot["layers"]=[s_layer]+lot["layers"]
 # The number in each card is how long the blue bar takes to load. The shutter plays at the END of the loading (it lasts 1.1s: 1.3s-2.4s in the master
 # timeline) and the bounce outro follows at its normal speed. Nothing is sped up: only the loading hold before the shutter is longer or shorter.
 SHUTTER_START,SHUTTER_LEN=1.3,1.0
@@ -113,6 +94,7 @@ for secs in (6,3,1):
     pause=0.5 if secs>1 else 0.0                          # half a second between shutter cycles (the 1s card is a single shutter, no pause)
     n=round(secs/(SHUTTER_LEN+pause))
     lot=copy.deepcopy(cut); repeat_shutter(lot,n,SHUTTER_LEN,pause,secs,base["fr"])
+    compose(lot,secs,[pause]*n if secs>1 else [0.0])
     lot["nm"]=f"Recommendation {secs}s loading"
     real.emit(f"rec-{secs}",lot,f"recommendation-{secs}s")
 
@@ -140,4 +122,5 @@ def recolour(o,fps):
         for x in o: recolour(x,fps)
 lot=copy.deepcopy(cut); repeat_shutter(lot,5,SHUTTER_LEN,0.5,15,base["fr"])     # 5 shutter cycles = 7.5s, then it holds still
 recolour(lot,base["fr"]); lot["nm"]="Recommendation 15s (error)"
+compose(lot,15,[0.5,0.5,0.5,0.5,0.0],fill_keys=colour_keys(base["fr"])["k"])
 real.emit("rec-15",lot,"recommendation-15s")
