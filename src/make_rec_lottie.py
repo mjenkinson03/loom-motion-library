@@ -56,6 +56,36 @@ def warp(o,fps):
     elif isinstance(o,list):
         for x in o: warp(x,fps)
 warp(base,base["fr"])
+
+# ---- the rest ripple: during each rest on the full logo the beams dip to 75% opacity one after another, clockwise from the top (the "little gray touch" from the Shutter card)
+RIP_DIP,RIP_STAG,RIP_DOWN,RIP_UP=75,0.02,0.07,0.12
+def ripple(lot,rests,fps):
+    """rests = start times (seconds) of rests on the full logo; each rest gets one ripple.
+    The dip is the beam's own fill opacity (lottie-web does not apply an animated opacity on a group transform that also animates rotation)."""
+    done=[0]
+    def dip(g):
+        k=int(g["nm"].split()[1])-1
+        keys=[(0,100)]
+        for t0 in rests:
+            s0=t0+k*RIP_STAG
+            keys+=[(s0,100),(s0+RIP_DOWN,RIP_DIP),(s0+RIP_DOWN+RIP_UP,100)]
+        keys.append((lot["op"]/fps,100))
+        ks=[]
+        for i,(t,v) in enumerate(keys):
+            d={"t":round(t*fps,3),"s":[v]}
+            if i<len(keys)-1: d.update({"o":{"x":[0.45],"y":[0]},"i":{"x":[0.55],"y":[1]}})
+            ks.append(d)
+        fl=[x for x in g["it"] if x.get("ty")=="fl"][0]
+        fl["o"]={"a":1,"k":ks}; done[0]+=1
+    def go(o):
+        if isinstance(o,dict):
+            if o.get("ty")=="gr" and str(o.get("nm","")).startswith("Beam "): dip(o)
+            else:
+                for v in o.values(): go(v)
+        elif isinstance(o,list):
+            for x in o: go(x)
+    go(lot); assert done[0]==12,done[0]
+
 # The number in each card is how long the blue bar takes to load. The shutter plays at the END of the loading (it lasts 1.1s: 1.3s-2.4s in the master
 # timeline) and the bounce outro follows at its normal speed. Nothing is sped up: only the loading hold before the shutter is longer or shorter.
 SHUTTER_START,SHUTTER_LEN=1.3,1.0
